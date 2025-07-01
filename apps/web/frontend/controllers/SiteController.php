@@ -75,7 +75,17 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $data = [
+            'suhu' => 23,
+            'volumeAir' => 1.98,
+            'phTanah' => 5,
+            'kelembabanTanah' => 78,
+            'statusPengisianAir' => "Tidak",
+            'tds' => 120,
+        ];
+        return $this->render('index', [
+            'data' => $data,
+        ]);
     }
 
     /**

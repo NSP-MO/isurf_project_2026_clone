@@ -1,52 +1,73 @@
 <?php
 
 /** @var yii\web\View $this */
+/** @var array $data */
 
 $this->title = 'iSurf IoT Dashboard';
 ?>
 <div class="site-index">
     <div class="p-5 mb-4 bg-transparent rounded-3">
         <div class="container-fluid py-5 text-center">
-            <h1 class="display-4">Congratulations!</h1>
-            <p class="fs-5 fw-light">You have successfully created your Yii-powered application.</p>
-            <p><a class="btn btn-lg btn-success" href="https://www.yiiframework.com">Get started with Yii</a></p>
+            <h1 class="display-4">Welcome iSurf IoT Dashboard</h1>
         </div>
     </div>
 
     <div class="body-content">
-
         <div class="row">
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="https://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
+            <div class="col-lg-3">
+                <div class="card text-white bg-info mb-3">
+                    <div class="card-header">Suhu</div>
+                    <div class="card-body">
+                        <h5 class="card-title"><?= $data['suhu'] ?></h5>
+                        <p class="card-text">°C</p>
+                    </div>
+                </div>
             </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="https://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
+            <div class="col-lg-3">
+                <div class="card text-white bg-info mb-3">
+                    <div class="card-header">Volume Air</div>
+                    <div class="card-body">
+                        <h5 class="card-title"><?= $data['volumeAir'] ?></h5>
+                        <p class="card-text">liter</p>
+                    </div>
+                </div>
             </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="https://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
+            <div class="col-lg-3">
+                <div class="card text-white bg-info mb-3">
+                    <div class="card-header">pH Tanah</div>
+                    <div class="card-body">
+                        <h5 class="card-title"><?= $data['phTanah'] ?></h5>
+                        <p class="card-text">pH</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="card text-white bg-info mb-3">
+                    <div class="card-header">Kelembaban Tanah</div>
+                    <div class="card-body">
+                        <h5 class="card-title"><?= $data['kelembabanTanah'] ?></h5>
+                        <p class="card-text">m3m-3</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="card text-white bg-info mb-3">
+                    <div class="card-header">Pengisian Air</div>
+                    <div class="card-body">
+                        <h5 class="card-title"><?= $data['statusPengisianAir'] ?></h5>
+                        <p class="card-text">Servo</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="card text-white bg-info mb-3">
+                    <div class="card-header">TDS</div>
+                    <div class="card-body">
+                        <h5 class="card-title"><?= $data['tds'] ?></h5>
+                        <p class="card-text">ppm</p>
+                    </div>
+                </div>
             </div>
         </div>
-
     </div>
 </div>
