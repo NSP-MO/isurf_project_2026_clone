@@ -3,20 +3,20 @@
 $this->title = 'Analytics';
 ?>
 <div class="analytics-page">
-    <div class="analytics-header">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
         <h1 class="text-h2" style="margin: 0;">Analytics & Reports</h1>
-        <div style="display: flex; gap: var(--space-3); align-items: center;">
-            <select class="analytics-select">
+        <div style="display: flex; gap: var(--space-3); align-items: center; width: 100%; sm:width: auto;">
+            <select class="analytics-select" style="flex: 1; sm:flex: none;">
                 <option>Last 7 Days</option>
                 <option>Last 30 Days</option>
                 <option>This Year</option>
             </select>
-            <a href="<?= yii\helpers\Url::to(['site/request-data']) ?>" class="ds-btn-primary" style="text-decoration: none;">Download Data</a>
+            <a href="<?= yii\helpers\Url::to(['site/request-data']) ?>" class="ds-btn-primary" style="text-decoration: none; white-space: nowrap;">Download Data</a>
         </div>
     </div>
 
     <!-- Summary Cards -->
-    <div class="summary-grid">
+    <div class="ds-grid ds-grid-cols-1 md-grid-cols-2 lg-grid-cols-4">
         <div class="summary-card">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
@@ -83,7 +83,7 @@ $this->title = 'Analytics';
     </div>
 
     <!-- Charts Row -->
-    <div class="charts-grid">
+    <div class="ds-grid ds-grid-cols-1 lg-grid-cols-2-1">
         <!-- Water Consumption Bar Chart -->
         <div class="chart-card">
             <div class="chart-card-header">
@@ -284,11 +284,6 @@ $this->title = 'Analytics';
     flex-direction: column;
     gap: var(--space-5);
 }
-.analytics-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
 .analytics-select {
     background: white;
     border: 1px solid var(--gray-200);
@@ -297,15 +292,6 @@ $this->title = 'Analytics';
     font-size: 14px;
     color: var(--gray-600);
     cursor: pointer;
-}
-/* Summary Grid */
-.summary-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-4);
-}
-@media (min-width: 1024px) {
-    .summary-grid { grid-template-columns: repeat(4, 1fr); }
 }
 .summary-card {
     background: white;
@@ -345,14 +331,6 @@ $this->title = 'Analytics';
 .trend-up { color: var(--primary-600); }
 .trend-down { color: var(--danger); }
 /* Charts */
-.charts-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-5);
-}
-@media (min-width: 1024px) {
-    .charts-grid { grid-template-columns: 3fr 2fr; }
-}
 .chart-card {
     background: white;
     padding: var(--space-5);

@@ -22,7 +22,7 @@ $this->registerJsFile('@web/js/dashboard.js', ['depends' => [\yii\web\JqueryAsse
     </div>
 
     <!-- Metric Cards (4 Columns) -->
-    <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: var(--space-5); @media(min-width: 640px){ grid-template-columns: repeat(2, 1fr); } @media(min-width: 1024px){ grid-template-columns: repeat(4, 1fr); }">
+    <div class="ds-grid ds-grid-cols-1 md-grid-cols-2 lg-grid-cols-4">
         
         <!-- TDS Card -->
         <div style="background: white; border-radius: var(--radius-md); box-shadow: 0 1px 3px rgba(0,0,0,0.05); padding: var(--space-5); border: 1px solid var(--gray-100);">
@@ -101,7 +101,7 @@ $this->registerJsFile('@web/js/dashboard.js', ['depends' => [\yii\web\JqueryAsse
     </div>
 
     <!-- Charts Row (2 Columns) -->
-    <div style="display: grid; grid-template-columns: 1fr; gap: var(--space-5); @media(min-width: 1024px){ grid-template-columns: 1fr 1fr; }">
+    <div class="ds-grid ds-grid-cols-1 lg-grid-cols-2">
         
         <!-- Quality Trend Chart -->
         <div style="background: white; padding: var(--space-5); border-radius: var(--radius-md); box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid var(--gray-100); display: flex; flex-direction: column;">
@@ -127,7 +127,7 @@ $this->registerJsFile('@web/js/dashboard.js', ['depends' => [\yii\web\JqueryAsse
     </div>
 
     <!-- Controls & Alerts Row -->
-    <div style="display: grid; grid-template-columns: 1fr; gap: var(--space-5); @media(min-width: 1024px){ grid-template-columns: 1fr 1fr; }">
+    <div class="ds-grid ds-grid-cols-1 lg-grid-cols-2">
         
         <?php if (!Yii::$app->user->isGuest): ?>
         <!-- Irrigation Control -->

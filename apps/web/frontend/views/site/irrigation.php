@@ -13,7 +13,7 @@ $this->title = 'Irrigation Control';
         <select id="deviceSelect"></select>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr; gap: var(--space-5); @media(min-width: 1024px){ grid-template-columns: 1fr 2fr; }">
+    <div class="ds-grid ds-grid-cols-1 lg-grid-cols-1-2">
         <!-- Control Panel -->
         <div style="background: white; padding: var(--space-5); border-radius: var(--radius-md); box-shadow: var(--elevation-1);">
             <h3 class="text-h3" style="margin-bottom: var(--space-4);">Manual Override</h3>
