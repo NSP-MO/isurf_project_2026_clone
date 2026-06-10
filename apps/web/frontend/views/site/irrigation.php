@@ -8,12 +8,9 @@ $this->title = 'Irrigation Control';
         <span class="ds-badge ds-badge-warning" id="status-badge">Loading...</span>
     </div>
 
-    <!-- Device Selector -->
-    <div style="background: white; padding: var(--space-4); border-radius: var(--radius-md); box-shadow: var(--elevation-1); display: flex; align-items: center; gap: var(--space-3);">
-        <label class="text-body font-bold">Select Controller:</label>
-        <select id="deviceSelect" onchange="switchDevice()" style="padding: 8px; border: 1px solid var(--gray-300); border-radius: 4px; min-width: 200px;">
-            <option value="">Loading...</option>
-        </select>
+    <!-- Device Selector Removed (Single Greenhouse Concept) -->
+    <div style="display: none;">
+        <select id="deviceSelect"></select>
     </div>
 
     <div style="display: grid; grid-template-columns: 1fr; gap: var(--space-5); @media(min-width: 1024px){ grid-template-columns: 1fr 2fr; }">
@@ -87,35 +84,37 @@ $this->title = 'Irrigation Control';
     const badge = document.getElementById('status-badge');
 
     async function init() {
-        // Load devices into select
         const devices = await iSurfAPI.getDevices();
         const select = document.getElementById('deviceSelect');
         select.innerHTML = '';
         
         let hasIrrigation = false;
-        devices.forEach(d => {
+        const irrigationDevices = devices.filter(d => d.type === 'esp32_irrigation');
+        
+        if (irrigationDevices.length > 0) {
+            const d = irrigationDevices[0]; // Auto-select first irrigation device
             const opt = document.createElement('option');
             opt.value = d.id;
-            opt.textContent = `${d.name} (${d.type})`;
             select.appendChild(opt);
-            if(!hasIrrigation && (d.type === 'esp32_irrigation' || d.type === 'irrigation')) {
-                opt.selected = true;
-                hasIrrigation = true;
-            }
-        });
-        
-        if (devices.length > 0 && !hasIrrigation) {
-            select.selectedIndex = 0;
+            
+            selectedDeviceId = d.id;
+            hasIrrigation = true;
+            document.getElementById('status-badge').textContent = d.name; // Show device name as badge
+            
+            await refreshStatus();
+            await refreshSchedules();
+        } else {
+            const opt = document.createElement('option');
+            opt.value = "";
+            opt.textContent = "No Irrigation Controller found";
+            select.appendChild(opt);
+            document.getElementById('status-badge').textContent = "No Controller";
+            document.getElementById('status-badge').className = "ds-badge ds-badge-danger";
         }
-
-        switchDevice();
     }
 
     async function switchDevice() {
-        selectedDeviceId = document.getElementById('deviceSelect').value;
-        if (!selectedDeviceId) return;
-        await refreshStatus();
-        await refreshSchedules();
+        // Obsolete but kept for JS structure safely
     }
 
     async function refreshStatus() {
@@ -189,8 +188,8 @@ $this->title = 'Irrigation Control';
                 </div>
                 <div style="display: flex; gap: 8px;">
                     <button onclick="delSchedule(${sch.id})" style="background: none; border: none; color: var(--danger); cursor: pointer; padding: 4px;">Delete</button>
-                    <div onclick="toggleScheduleStatus(${sch.id}, ${!sch.is_active})" style="cursor: pointer; width: 40px; height: 24px; border-radius: 12px; background-color: ${sch.is_active ? 'var(--primary-500)' : 'var(--gray-300)'}; position: relative; transition: background-color 0.3s;">
-                        <span style="position: absolute; right: ${sch.is_active ? '2px' : 'auto'}; left: ${sch.is_active ? 'auto' : '2px'}; top: 2px; width: 20px; height: 20px; background: white; border-radius: 50%; transition: all 0.3s;"></span>
+                    <div onclick="toggleScheduleStatus(${sch.id}, ${!sch.is_active})" style="cursor: pointer; width: 40px; height: 24px; border-radius: 12px; background-color: ${sch.is_active ? 'var(--primary-500)' : 'var(--gray-200)'}; position: relative; transition: background-color 0.3s;">
+                        <span style="position: absolute; right: ${sch.is_active ? '2px' : 'auto'}; left: ${sch.is_active ? 'auto' : '2px'}; top: 2px; width: 20px; height: 20px; background: white; border-radius: 50%; transition: all 0.3s; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></span>
                     </div>
                 </div>
             </div>`;
