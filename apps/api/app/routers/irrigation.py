@@ -3,7 +3,10 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime, timedelta, time
+from zoneinfo import ZoneInfo
 from ..database import get_db
+
+TZ_JKT = ZoneInfo("Asia/Jakarta")
 from ..utils.auth import get_current_user
 from ..utils.rbac import require_operator, require_admin
 from ..models.irrigation import IrrigationSchedule
@@ -22,13 +25,13 @@ class TriggerRequest(BaseModel):
 @router.get("/status")
 def get_status(device_id: int = 1, db: Session = Depends(get_db)):
     override = MANUAL_OVERRIDES.get(device_id)
-    if override and override["until"] > datetime.now():
+    if override and override["until"] > datetime.now(TZ_JKT):
         return {"status": "Manual Override", "main_valve": override["state"], "until": override["until"].isoformat()}
     return {"status": "System Operational", "main_valve": "Auto"}
 
 @router.post("/trigger")
 def manual_trigger(request: TriggerRequest, db: Session = Depends(get_db)):
-    until = datetime.now() + timedelta(minutes=request.duration_minutes)
+    until = datetime.now(TZ_JKT) + timedelta(minutes=request.duration_minutes)
     MANUAL_OVERRIDES[request.device_id] = {
         "state": request.action,
         "until": until
@@ -83,7 +86,7 @@ def get_actuator_state(device_code: str, db: Session = Depends(get_db)):
     
     # 1. Check Manual Override
     override = MANUAL_OVERRIDES.get(device.id)
-    now = datetime.now()
+    now = datetime.now(TZ_JKT)
     if override and override["until"] > now:
         return {
             "pump": True if override["state"] == "ON" else False,
@@ -91,7 +94,7 @@ def get_actuator_state(device_code: str, db: Session = Depends(get_db)):
         }
     
     # 2. Check Schedules
-    day_str = now.strftime("%a") # e.g. "Mon", "Tue"
+    day_str = now.strftime("%w") # "0" = Sunday, "1" = Monday, etc.
     
     schedules = db.query(IrrigationSchedule).filter(
         IrrigationSchedule.device_id == device.id,
@@ -100,7 +103,7 @@ def get_actuator_state(device_code: str, db: Session = Depends(get_db)):
     
     for sch in schedules:
         if day_str in sch.days_of_week or "Everyday" in sch.days_of_week:
-            start_dt = datetime.combine(now.date(), sch.start_time)
+            start_dt = datetime.combine(now.date(), sch.start_time, tzinfo=TZ_JKT)
             end_dt = start_dt + timedelta(minutes=sch.duration_minutes)
             if start_dt <= now <= end_dt:
                 return {

@@ -1,6 +1,6 @@
 // isurf-api.js
 const iSurfAPI = {
-    baseUrl: typeof apiBaseUrl !== 'undefined' ? apiBaseUrl : 'http://localhost:8000/api',
+    baseUrl: typeof apiBaseUrl !== 'undefined' ? apiBaseUrl : `http://${window.location.hostname}:8000/api`,
 
     async getLatestReadings() {
         try {

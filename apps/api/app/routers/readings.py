@@ -11,16 +11,25 @@ router = APIRouter(prefix="/readings", tags=["readings"])
 
 @router.get("/latest", response_model=Dict[str, Any])
 def read_latest_readings(db: Session = Depends(get_db)):
-    # Simple implementation to get the latest reading for each sensor
-    sensors = db.query(Sensor).filter(Sensor.is_active == True).all()
+    subq = db.query(
+        SensorReading.sensor_id,
+        func.max(SensorReading.recorded_at).label('max_recorded_at')
+    ).group_by(SensorReading.sensor_id).subquery()
+    
+    latest_readings = db.query(SensorReading, Sensor).join(
+        Sensor, SensorReading.sensor_id == Sensor.id
+    ).join(
+        subq, 
+        (SensorReading.sensor_id == subq.c.sensor_id) & 
+        (SensorReading.recorded_at == subq.c.max_recorded_at)
+    ).filter(Sensor.is_active == True).all()
+
     results = {}
-    for sensor in sensors:
-        latest = db.query(SensorReading).filter(SensorReading.sensor_id == sensor.id).order_by(SensorReading.recorded_at.desc()).first()
-        if latest:
-            results[sensor.name] = {
-                "value": latest.value,
-                "unit": sensor.unit,
-                "recorded_at": latest.recorded_at,
-                "sensor_type": sensor.sensor_type
-            }
+    for reading, sensor in latest_readings:
+        results[sensor.name] = {
+            "value": reading.value,
+            "unit": sensor.unit,
+            "recorded_at": reading.recorded_at,
+            "sensor_type": sensor.sensor_type
+        }
     return results
