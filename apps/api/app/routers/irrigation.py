@@ -63,6 +63,18 @@ def delete_schedule(schedule_id: int, db: Session = Depends(get_db)):
     db.commit()
     return {"status": "success", "message": f"Schedule {schedule_id} deleted"}
 
+class ToggleRequest(BaseModel):
+    is_active: bool
+
+@router.put("/schedules/{schedule_id}/toggle")
+def toggle_schedule(schedule_id: int, request: ToggleRequest, db: Session = Depends(get_db)):
+    db_schedule = db.query(IrrigationSchedule).filter(IrrigationSchedule.id == schedule_id).first()
+    if not db_schedule:
+        raise HTTPException(status_code=404, detail="Schedule not found")
+    db_schedule.is_active = request.is_active
+    db.commit()
+    return {"status": "success", "is_active": db_schedule.is_active}
+
 @router.get("/state/{device_code}")
 def get_actuator_state(device_code: str, db: Session = Depends(get_db)):
     device = db.query(Device).filter(Device.device_code == device_code).first()

@@ -50,8 +50,28 @@ AppAsset::register($this);
 <!-- Sidebar -->
 <aside id="main-sidebar" class="ds-sidebar ds-sidebar-mobile md:static flex flex-col h-screen shrink-0 border-r">
     <div class="flex items-center gap-3 px-6" style="height: 80px; border-bottom: 1px solid var(--gray-100);">
-        <div style="width: 40px; height: 40px; background: var(--primary-500); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; shrink-0">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
+        <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg viewBox="0 0 100 100" width="36" height="36" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="leafGradLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#bef264" />
+                        <stop offset="100%" stop-color="#84cc16" />
+                    </linearGradient>
+                    <linearGradient id="leafGradRight" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#84cc16" />
+                        <stop offset="100%" stop-color="#4d7c0f" />
+                    </linearGradient>
+                </defs>
+                <!-- Left Leaf -->
+                <path d="M 45 85 C 5 70 0 35 15 25 C 35 25 50 50 45 85 Z" fill="url(#leafGradLeft)" />
+                <!-- Left Vein -->
+                <path d="M 15 25 Q 30 45 45 85" stroke="#ffffff" stroke-width="2.5" fill="none" stroke-linecap="round" />
+                
+                <!-- Right Leaf -->
+                <path d="M 40 85 C 90 90 100 45 85 15 C 60 10 35 45 40 85 Z" fill="url(#leafGradRight)" />
+                <!-- Right Vein -->
+                <path d="M 85 15 Q 60 45 40 85" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round" />
+            </svg>
         </div>
         <div>
             <h1 style="font-size: 18px; font-weight: 700; color: var(--gray-900); line-height: 1.2; margin: 0;">iSurf Lab</h1>
@@ -76,7 +96,7 @@ AppAsset::register($this);
         
         <?php if (!Yii::$app->user->isGuest): ?>
         <a href="<?= Url::to(['site/irrigation']) ?>" class="ds-sidebar-item <?= Yii::$app->controller->action->id == 'irrigation' ? 'active' : '' ?>">
-            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"></path></svg>
             Irrigation Control
             <?php if (Yii::$app->controller->action->id == 'irrigation'): ?><svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg><?php endif; ?>
         </a>

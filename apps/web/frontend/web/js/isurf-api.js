@@ -175,5 +175,20 @@ const iSurfAPI = {
             console.error('Error deleting schedule:', error);
             throw error;
         }
+    },
+
+    async toggleSchedule(scheduleId, isActive) {
+        try {
+            const response = await fetch(`${this.baseUrl}/irrigation/schedules/${scheduleId}/toggle`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ is_active: isActive })
+            });
+            if (!response.ok) throw new Error('Failed to toggle schedule');
+            return await response.json();
+        } catch (error) {
+            console.error('Error toggling schedule:', error);
+            throw error;
+        }
     }
 };

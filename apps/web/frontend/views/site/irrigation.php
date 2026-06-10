@@ -189,8 +189,8 @@ $this->title = 'Irrigation Control';
                 </div>
                 <div style="display: flex; gap: 8px;">
                     <button onclick="delSchedule(${sch.id})" style="background: none; border: none; color: var(--danger); cursor: pointer; padding: 4px;">Delete</button>
-                    <div style="width: 40px; height: 24px; border-radius: 12px; background-color: ${sch.is_active ? 'var(--primary-500)' : 'var(--gray-300)'}; position: relative;">
-                        <span style="position: absolute; right: ${sch.is_active ? '2px' : 'auto'}; left: ${sch.is_active ? 'auto' : '2px'}; top: 2px; width: 20px; height: 20px; background: white; border-radius: 50%;"></span>
+                    <div onclick="toggleScheduleStatus(${sch.id}, ${!sch.is_active})" style="cursor: pointer; width: 40px; height: 24px; border-radius: 12px; background-color: ${sch.is_active ? 'var(--primary-500)' : 'var(--gray-300)'}; position: relative; transition: background-color 0.3s;">
+                        <span style="position: absolute; right: ${sch.is_active ? '2px' : 'auto'}; left: ${sch.is_active ? 'auto' : '2px'}; top: 2px; width: 20px; height: 20px; background: white; border-radius: 50%; transition: all 0.3s;"></span>
                     </div>
                 </div>
             </div>`;
@@ -240,6 +240,15 @@ $this->title = 'Irrigation Control';
         if(confirm("Delete this schedule?")) {
             await iSurfAPI.deleteSchedule(id);
             refreshSchedules();
+        }
+    }
+
+    async function toggleScheduleStatus(id, newStatus) {
+        try {
+            await iSurfAPI.toggleSchedule(id, newStatus);
+            refreshSchedules();
+        } catch(e) {
+            alert('Failed to toggle schedule status');
         }
     }
 
