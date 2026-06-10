@@ -84,3 +84,29 @@ def heartbeat(payload: HeartbeatPayload, db: Session = Depends(get_db)):
         
     db.commit()
     return {"status": "success", "message": "Heartbeat received"}
+
+@router.get("/config")
+def get_device_config(device_code: str, api_key: str, db: Session = Depends(get_db)):
+    if api_key != API_KEY:
+        raise HTTPException(status_code=403, detail="Invalid API Key")
+    
+    device = db.query(Device).filter(Device.device_code == device_code).first()
+    if not device:
+        raise HTTPException(status_code=404, detail="Device not found")
+        
+    sensors = db.query(Sensor).filter(Sensor.device_id == device.id, Sensor.is_active == True).all()
+    
+    config_data = []
+    for sensor in sensors:
+        config_data.append({
+            "sensor_name": sensor.name,
+            "sensor_type": sensor.sensor_type,
+            "min_threshold": sensor.min_threshold,
+            "max_threshold": sensor.max_threshold
+        })
+        
+    return {
+        "status": "success",
+        "device_code": device_code,
+        "sensors": config_data
+    }

@@ -1,6 +1,7 @@
 from pydantic import BaseModel, ConfigDict
 from typing import Optional, List
 from datetime import datetime
+from .sensor import SensorResponse
 
 class DeviceBase(BaseModel):
     device_code: str
@@ -18,5 +19,6 @@ class DeviceResponse(DeviceBase):
     last_heartbeat: Optional[datetime] = None
     created_at: datetime
     updated_at: datetime
+    sensors: List[SensorResponse] = []
 
     model_config = ConfigDict(from_attributes=True)

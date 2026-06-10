@@ -19,3 +19,7 @@ class SensorResponse(SensorBase):
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+class SensorThresholdUpdate(BaseModel):
+    min_threshold: Optional[float] = None
+    max_threshold: Optional[float] = None
