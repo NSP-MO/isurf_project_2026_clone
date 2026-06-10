@@ -78,8 +78,8 @@ $this->title = 'Device Management';
                 </select>
             </div>
             <div style="margin-bottom: 16px;">
-                <label class="text-caption font-medium" style="display: block; margin-bottom: 8px;">Lokasi</label>
-                <input type="text" id="newDevLocation" style="width: 100%; padding: 8px; border: 1px solid var(--gray-300); border-radius: 4px;" placeholder="cth: Greenhouse C">
+                <label class="text-caption font-medium" style="display: block; margin-bottom: 8px;">Posisi/Rak (dalam Lab)</label>
+                <input type="text" id="newDevLocation" style="width: 100%; padding: 8px; border: 1px solid var(--gray-300); border-radius: 4px;" placeholder="cth: Rak Tomat A">
             </div>
         </div>
         <div style="padding: var(--space-5); border-top: 1px solid var(--gray-200); display: flex; justify-content: flex-end; gap: var(--space-3);">
