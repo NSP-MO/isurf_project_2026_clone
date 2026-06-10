@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const mappings = {
             'Water Quality (TDS)': { val: 'metric-tds', status: 'status-tds' },
             'Water pH Level': { val: 'metric-ph', status: 'status-ph' },
-            'Water Temperature': { val: 'metric-temp', status: 'status-temp' }
+            'Air Temperature': { val: 'metric-temp', status: 'status-temp' }
         };
 
         for (const [sensorName, uiIds] of Object.entries(mappings)) {

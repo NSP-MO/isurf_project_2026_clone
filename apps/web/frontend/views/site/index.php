@@ -74,9 +74,9 @@ $this->registerJsFile('@web/js/dashboard.js', ['depends' => [\yii\web\JqueryAsse
                 <span class="text-h2" style="font-weight: 700; color: var(--gray-900);" id="metric-temp">--</span>
                 <span class="text-body font-bold" style="color: var(--gray-900);">°C</span>
             </div>
-            <p class="text-body" style="color: var(--gray-500); margin-bottom: 8px;">Water Temperature</p>
+            <p class="text-body" style="color: var(--gray-500); margin-bottom: 8px;">Air Temperature</p>
             <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px;">
-                <span style="color: var(--gray-400);">Optimal: < 28°C</span>
+                <span style="color: var(--gray-400);">Optimal: 15-35°C</span>
                 <span style="color: var(--gray-400);">Avg: 25.1°C</span>
             </div>
         </div>
