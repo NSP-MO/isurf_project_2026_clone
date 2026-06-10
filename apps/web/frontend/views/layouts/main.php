@@ -48,7 +48,7 @@ AppAsset::register($this);
 <div id="sidebar-overlay" class="ds-overlay transition-opacity duration-300"></div>
 
 <!-- Sidebar -->
-<aside id="main-sidebar" class="ds-sidebar ds-sidebar-mobile md:static flex flex-col h-screen shrink-0 border-r">
+<aside id="main-sidebar" class="ds-sidebar ds-sidebar-mobile md:static flex flex-col h-[100dvh] shrink-0 border-r">
     <div class="flex items-center gap-3 px-6" style="height: 80px; border-bottom: 1px solid var(--gray-100);">
         <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
             <svg viewBox="0 0 100 100" width="36" height="36" xmlns="http://www.w3.org/2000/svg">
