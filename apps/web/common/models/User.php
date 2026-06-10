@@ -22,6 +22,8 @@ use yii\web\IdentityInterface;
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $password write-only password
+ * @property string $full_name
+ * @property string $role
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -35,7 +37,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function tableName()
     {
-        return '{{%user}}';
+        return '{{%users}}';
     }
 
     /**

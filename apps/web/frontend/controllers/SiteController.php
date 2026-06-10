@@ -29,7 +29,7 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout', 'signup'],
+                'only' => ['logout', 'signup', 'irrigation', 'alerts', 'manage-requests'],
                 'rules' => [
                     [
                         'actions' => ['signup'],
@@ -37,7 +37,7 @@ class SiteController extends Controller
                         'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['logout'],
+                        'actions' => ['logout', 'irrigation', 'alerts', 'manage-requests'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -69,23 +69,63 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays homepage.
+     * Displays homepage (Dashboard).
      *
      * @return mixed
      */
     public function actionIndex()
     {
-        $data = [
-            'suhu' => 23,
-            'volumeAir' => 1.98,
-            'phTanah' => 5,
-            'kelembabanTanah' => 78,
-            'statusPengisianAir' => "Tidak",
-            'tds' => 120,
-        ];
-        return $this->render('index', [
-            'data' => $data,
-        ]);
+        return $this->render('index');
+    }
+
+    /**
+     * Displays monitoring page (Replaced Devices).
+     *
+     * @return mixed
+     */
+    public function actionMonitoring()
+    {
+        return $this->render('monitoring');
+    }
+
+    /**
+     * Displays irrigation control page.
+     *
+     * @return mixed
+     */
+    public function actionIrrigation()
+    {
+        return $this->render('irrigation');
+    }
+
+    /**
+     * Displays analytics page.
+     *
+     * @return mixed
+     */
+    public function actionAnalytics()
+    {
+        return $this->render('analytics');
+    }
+
+    public function actionRequestData()
+    {
+        return $this->render('request-data');
+    }
+
+    public function actionManageRequests()
+    {
+        return $this->render('manage-requests');
+    }
+
+    /**
+     * Displays alerts & logs page.
+     *
+     * @return mixed
+     */
+    public function actionAlerts()
+    {
+        return $this->render('alerts');
     }
 
     /**

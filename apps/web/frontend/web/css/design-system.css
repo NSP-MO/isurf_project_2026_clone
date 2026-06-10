@@ -1,0 +1,211 @@
+/* apps/web/frontend/web/css/design-system.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Primary Colors */
+  --primary-50:  #F0FDF4;
+  --primary-100: #DCFCE7;
+  --primary-500: #22C55E;
+  --primary-600: #16A34A;
+  --primary-700: #15803D;
+
+  /* Secondary Colors */
+  --blue-500:   #3B82F6;
+  --orange-500: #F97316;
+  --cyan-500:   #06B6D4;
+  --yellow-500: #EAB308;
+
+  /* Neutral Colors */
+  --gray-50:  #F8FAFC;
+  --gray-100: #F1F5F9;
+  --gray-200: #E2E8F0;
+  --gray-400: #94A3B8;
+  --gray-600: #475569;
+  --gray-900: #0F172A;
+
+  /* Semantic Colors */
+  --success: #22C55E;
+  --warning: #F59E0B;
+  --danger:  #EF4444;
+  --info:    #3B82F6;
+
+  /* Typography */
+  --font-family: 'Inter', 'Segoe UI', sans-serif;
+
+  /* Spacing Tokens (8-Point Grid System) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 40px;
+  --space-8: 48px;
+
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 999px;
+
+  /* Elevation */
+  --elevation-1: 0 1px 3px rgba(0,0,0,0.08);
+  --elevation-2: 0 4px 12px rgba(0,0,0,0.08);
+  --elevation-3: 0 8px 24px rgba(0,0,0,0.12);
+
+  /* Structure */
+  --sidebar-width: 256px;
+}
+
+/* -------------------------------------
+ * Base Elements
+ * ------------------------------------- */
+body {
+  font-family: var(--font-family);
+  background-color: var(--gray-50);
+  color: var(--gray-900);
+}
+
+/* -------------------------------------
+ * Atoms - Typography
+ * ------------------------------------- */
+.text-display { font-size: 36px; font-weight: 700; line-height: 1.2; }
+.text-h1      { font-size: 32px; font-weight: 700; line-height: 1.2; }
+.text-h2      { font-size: 24px; font-weight: 600; line-height: 1.3; }
+.text-h3      { font-size: 20px; font-weight: 600; line-height: 1.4; }
+.text-body-lg { font-size: 16px; font-weight: 400; line-height: 1.5; }
+.text-body    { font-size: 14px; font-weight: 400; line-height: 1.5; }
+.text-caption { font-size: 12px; font-weight: 400; line-height: 1.5; }
+
+/* -------------------------------------
+ * Atoms - Utilities
+ * ------------------------------------- */
+.bg-primary { background-color: var(--primary-500); }
+.text-primary { color: var(--primary-500); }
+.bg-gray-100 { background-color: var(--gray-100); }
+
+/* -------------------------------------
+ * Organisms - Sensor Card
+ * ------------------------------------- */
+.ds-sensor-card {
+  height: 180px;
+  border-radius: var(--radius-md);
+  background-color: #FFFFFF;
+  box-shadow: var(--elevation-1);
+  padding: var(--space-4);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.ds-sensor-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--elevation-2);
+}
+
+/* -------------------------------------
+ * Buttons
+ * ------------------------------------- */
+.ds-btn-primary {
+  background-color: var(--primary-500);
+  color: white;
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-4);
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ds-btn-primary:hover {
+  background-color: var(--primary-600);
+}
+
+.ds-btn-primary:focus {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
+}
+
+.ds-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* -------------------------------------
+ * Badges
+ * ------------------------------------- */
+.ds-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 500;
+}
+.ds-badge-success { background-color: var(--primary-100); color: var(--primary-700); }
+.ds-badge-warning { background-color: #FEF3C7; color: var(--warning); }
+.ds-badge-danger  { background-color: #FEE2E2; color: var(--danger); }
+.ds-badge-info    { background-color: #DBEAFE; color: var(--info); }
+
+/* -------------------------------------
+ * Sidebar Layout Component
+ * ------------------------------------- */
+.ds-sidebar {
+  width: var(--sidebar-width);
+  background-color: white;
+  border-right: 1px solid var(--gray-200);
+  transition: width 0.3s ease;
+}
+
+.ds-sidebar-item {
+  display: flex;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  color: var(--gray-600);
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.ds-sidebar-item:hover {
+  color: var(--gray-900);
+  background-color: var(--gray-50);
+}
+
+.ds-sidebar-item.active {
+  background-color: var(--primary-50);
+  color: var(--primary-700);
+  font-weight: 600;
+}
+
+/* Responsive Sidebar Drawer */
+@media (max-width: 767px) {
+  .ds-sidebar-mobile {
+    position: fixed;
+    z-index: 50;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    transform: translateX(-100%);
+  }
+  .ds-sidebar-mobile.open {
+    transform: translateX(0);
+  }
+  .ds-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.5); /* gray-900 */
+    z-index: 40;
+  }
+  .ds-overlay.open {
+    display: block;
+  }
+}

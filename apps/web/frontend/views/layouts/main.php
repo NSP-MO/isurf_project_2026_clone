@@ -1,6 +1,3 @@
-<!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
 <?php
 
 /** @var \yii\web\View $this */
@@ -8,69 +5,220 @@
 
 use common\widgets\Alert;
 use frontend\assets\AppAsset;
-use yii\bootstrap5\Breadcrumbs;
-use yii\bootstrap5\Html;
-use yii\bootstrap5\Nav;
-use yii\bootstrap5\NavBar;
+use yii\helpers\Html;
+use yii\helpers\Url;
 
 AppAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
-<html lang="<?= Yii::$app->language ?>" class="h-100">
+<html lang="<?= Yii::$app->language ?>" class="h-full" style="background-color: var(--gray-50);">
 <head>
     <meta charset="<?= Yii::$app->charset ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <?php $this->registerCsrfMetaTags() ?>
-    <title><?= Html::encode($this->title) ?></title>
+    <title><?= Html::encode($this->title) ?> - iSURF</title>
+    
+    <!-- Design System CSS -->
+    <link href="<?= Url::to('@web/css/design-system.css') ?>" rel="stylesheet">
+    
+    <!-- Tailwind CSS v4 -->
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+        @theme {
+            --color-primary-50:  #F0FDF4;
+            --color-primary-500: #22C55E;
+            --color-primary-600: #16A34A;
+            --color-gray-50:  #F8FAFC;
+            --color-gray-100: #F1F5F9;
+            --color-gray-800: #1e293b;
+            --color-gray-900: #0F172A;
+        }
+    </style>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <?php $this->head() ?>
 </head>
-<body class="d-flex flex-column h-100">
+<body class="h-full text-gray-900 antialiased flex overflow-hidden m-0 p-0">
 <?php $this->beginBody() ?>
 
-<header>
-    <?php
-    NavBar::begin([
-        'brandLabel' => Yii::$app->name,
-        'brandUrl' => Yii::$app->homeUrl,
-        'options' => [
-            'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
-        ],
-    ]);
-    $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
-        // ['label' => 'About', 'url' => ['/site/about']],
-        // ['label' => 'Contact', 'url' => ['/site/contact']],
-    ];
-    // if (Yii::$app->user->isGuest) {
-    //     $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
-    // }
+<!-- Mobile Overlay -->
+<div id="sidebar-overlay" class="ds-overlay transition-opacity duration-300"></div>
 
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav me-auto mb-2 mb-md-0'],
-        'items' => $menuItems,
-    ]);
-    ?>
-</header>
-
-<main role="main" class="flex-shrink-0">
-    <div class="container">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
-        <?= Alert::widget() ?>
-        <?= $content ?>
+<!-- Sidebar -->
+<aside id="main-sidebar" class="ds-sidebar ds-sidebar-mobile md:static flex flex-col h-screen shrink-0 border-r">
+    <div class="flex items-center gap-3 px-6" style="height: 80px; border-bottom: 1px solid var(--gray-100);">
+        <div style="width: 40px; height: 40px; background: var(--primary-500); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; shrink-0">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
+        </div>
+        <div>
+            <h1 style="font-size: 18px; font-weight: 700; color: var(--gray-900); line-height: 1.2; margin: 0;">iSURF</h1>
+            <p style="font-size: 12px; color: var(--gray-500); margin: 0;">Monitoring Platform</p>
+        </div>
+        <button id="close-sidebar" class="md:hidden text-gray-400 hover:text-gray-900 ml-auto" aria-label="Close sidebar">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
     </div>
-</main>
+    
+    <nav class="flex-1 overflow-y-auto" style="padding: var(--space-5) var(--space-3); display: flex; flex-direction: column; gap: var(--space-2);" role="navigation" aria-label="Main Navigation">
+        <a href="<?= Url::to(['site/index']) ?>" class="ds-sidebar-item <?= Yii::$app->controller->action->id == 'index' ? 'active' : '' ?>">
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+            Dashboard
+            <?php if (Yii::$app->controller->action->id == 'index'): ?><svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg><?php endif; ?>
+        </a>
+        <a href="<?= Url::to(['site/monitoring']) ?>" class="ds-sidebar-item <?= Yii::$app->controller->action->id == 'monitoring' ? 'active' : '' ?>">
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+            Monitoring
+            <?php if (Yii::$app->controller->action->id == 'monitoring'): ?><svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg><?php endif; ?>
+        </a>
+        
+        <?php if (!Yii::$app->user->isGuest): ?>
+        <a href="<?= Url::to(['site/irrigation']) ?>" class="ds-sidebar-item <?= Yii::$app->controller->action->id == 'irrigation' ? 'active' : '' ?>">
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+            Irrigation Control
+            <?php if (Yii::$app->controller->action->id == 'irrigation'): ?><svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg><?php endif; ?>
+        </a>
+        <?php endif; ?>
+        
+        <a href="<?= Url::to(['site/analytics']) ?>" class="ds-sidebar-item <?= Yii::$app->controller->action->id == 'analytics' ? 'active' : '' ?>">
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
+            Analytics
+            <?php if (Yii::$app->controller->action->id == 'analytics'): ?><svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg><?php endif; ?>
+        </a>
 
-<footer class="footer mt-auto py-3 text-muted">
-    <div class="container">
-        <p class="float-start">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
-        <p class="float-end"><?= Yii::powered() ?></p>
+        <!-- Data Request Menus (Guest Only) -->
+        <?php if (Yii::$app->user->isGuest): ?>
+        <a href="<?= Url::to(['site/request-data']) ?>" class="ds-sidebar-item <?= Yii::$app->controller->action->id == 'request-data' ? 'active' : '' ?>">
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            Request Data
+            <?php if (Yii::$app->controller->action->id == 'request-data'): ?><svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg><?php endif; ?>
+        </a>
+        <?php endif; ?>
+
+        <?php if (!Yii::$app->user->isGuest): ?>
+        <a href="<?= Url::to(['site/alerts']) ?>" class="ds-sidebar-item <?= Yii::$app->controller->action->id == 'alerts' ? 'active' : '' ?>">
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+            Alerts & Logs
+            <?php if (Yii::$app->controller->action->id == 'alerts'): ?><svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg><?php endif; ?>
+        </a>
+        <a href="<?= Url::to(['site/manage-requests']) ?>" class="ds-sidebar-item <?= Yii::$app->controller->action->id == 'manage-requests' ? 'active' : '' ?>">
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+            Manage Requests
+            <?php if (Yii::$app->controller->action->id == 'manage-requests'): ?><svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg><?php endif; ?>
+        </a>
+        <?php endif; ?>
+    </nav>
+    
+    <div style="padding: var(--space-4); border-top: 1px solid var(--gray-200);">
+        <div class="flex items-center">
+            <div class="rounded-full flex items-center justify-center text-sm font-bold shrink-0" style="width: 40px; height: 40px; background-color: var(--primary-100); color: var(--primary-700);">
+                <?= Yii::$app->user->isGuest ? 'U' : strtoupper(substr(Yii::$app->user->identity->username, 0, 1)) ?>
+            </div>
+            <div class="ml-3 overflow-hidden">
+                <p class="font-medium truncate" style="color: var(--gray-900) !important; font-size: 14px; margin: 0; line-height: 1.4;"><?= Yii::$app->user->isGuest ? 'Guest' : Yii::$app->user->identity->username ?></p>
+                <?php if (!Yii::$app->user->isGuest): ?>
+                    <?= Html::beginForm(['/site/logout'], 'post', ['class' => 'inline', 'style' => 'margin: 0;']) ?>
+                    <button type="submit" class="text-caption mt-1 cursor-pointer hover:text-primary-600" style="color: var(--gray-500); border: none; background: transparent; padding: 0;">Logout</button>
+                    <?= Html::endForm() ?>
+                <?php else: ?>
+                    <a href="<?= Url::to(['/site/login']) ?>" class="text-caption mt-1 hover:text-primary-600 block" style="color: var(--primary-500);">Login</a>
+                <?php endif; ?>
+            </div>
+        </div>
     </div>
-</footer>
+</aside>
+
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col min-w-0 overflow-hidden" style="background-color: var(--gray-50);">
+    
+    <!-- Top Header -->
+    <header class="bg-white flex items-center justify-between shrink-0 z-10" style="height: 64px; padding: 0 var(--space-5) 0 var(--space-3); box-shadow: var(--elevation-1);">
+        <div class="flex items-center gap-1">
+            <button id="open-sidebar" class="md:hidden text-gray-500 hover:text-gray-700 focus:outline-none p-1" aria-label="Open sidebar">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+            <h2 style="color: var(--gray-900); margin: 0; font-size: 20px; font-weight: 600;"><?= Html::encode($this->title) ?></h2>
+        </div>
+        
+        <div class="flex items-center gap-6">
+            <div class="hidden sm:flex items-center gap-2 text-gray-500">
+                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span style="font-size: 14px;" id="header-time"><?= date('H:i:s') ?> - <?= date('d/m/Y') ?></span>
+            </div>
+            <div class="hidden sm:flex items-center gap-2 text-gray-500">
+                <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"></path></svg>
+                <span style="font-size: 14px;">Connected</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto" style="padding: var(--space-5); md:padding: var(--space-6);">
+        <?php if (Yii::$app->session->hasFlash('success')): ?>
+            <div class="mb-4 p-4 rounded shadow-sm flex items-center" style="background-color: var(--primary-50); border-left: 4px solid var(--primary-500);">
+                <svg class="h-5 w-5 mr-3" style="color: var(--primary-500);" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                <p class="text-body font-medium" style="color: var(--primary-700); margin: 0;"><?= Yii::$app->session->getFlash('success') ?></p>
+            </div>
+        <?php endif; ?>
+        
+        <?php if (Yii::$app->session->hasFlash('error')): ?>
+            <div class="mb-4 p-4 rounded shadow-sm flex items-center" style="background-color: #FEE2E2; border-left: 4px solid var(--danger);">
+                <svg class="h-5 w-5 mr-3" style="color: var(--danger);" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                </svg>
+                <p class="text-body font-medium" style="color: #991B1B; margin: 0;"><?= Yii::$app->session->getFlash('error') ?></p>
+            </div>
+        <?php endif; ?>
+
+        <!-- Render View -->
+        <div class="mx-auto" style="max-width: 1440px;">
+            <?= $content ?>
+        </div>
+        
+        <footer class="mt-12 pt-6 pb-2 text-center text-caption" style="border-top: 1px solid var(--gray-200); color: var(--gray-400);">
+            <p style="margin: 0;">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?>. All rights reserved.</p>
+        </footer>
+    </main>
+</div>
+
+<script>
+    // Live Clock
+    function updateClock() {
+        const now = new Date();
+        const timeEl = document.getElementById('header-time');
+        const h = String(now.getHours()).padStart(2, '0');
+        const m = String(now.getMinutes()).padStart(2, '0');
+        const s = String(now.getSeconds()).padStart(2, '0');
+        const d = String(now.getDate()).padStart(2, '0');
+        const mo = String(now.getMonth()+1).padStart(2, '0');
+        const y = now.getFullYear();
+        if(timeEl) timeEl.textContent = `${h}:${m}:${s} - ${d}/${mo}/${y}`;
+    }
+    setInterval(updateClock, 1000);
+
+    // Mobile Sidebar Drawer logic
+    const openBtn = document.getElementById('open-sidebar');
+    const closeBtn = document.getElementById('close-sidebar');
+    const sidebar = document.getElementById('main-sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+
+    function toggleSidebar() {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('open');
+    }
+
+    if(openBtn) openBtn.addEventListener('click', toggleSidebar);
+    if(closeBtn) closeBtn.addEventListener('click', toggleSidebar);
+    if(overlay) overlay.addEventListener('click', toggleSidebar);
+</script>
 
 <?php $this->endBody() ?>
 </body>
 </html>
-<?php $this->endPage();
+<?php $this->endPage(); ?>
