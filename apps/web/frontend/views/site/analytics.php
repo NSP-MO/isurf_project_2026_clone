@@ -17,7 +17,7 @@ $this->title = 'Analytics';
 
     <!-- Summary Cards -->
     <div class="ds-grid ds-grid-cols-1 md-grid-cols-2 lg-grid-cols-4">
-        <div class="summary-card">
+        <div class="summary-card glass-card">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
                     <p class="text-caption" style="color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin: 0;">Avg. Moisture</p>
@@ -65,7 +65,7 @@ $this->title = 'Analytics';
             </div>
         </div>
 
-        <div class="summary-card">
+        <div class="summary-card glass-card">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
                     <p class="text-caption" style="color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin: 0;">Uptime</p>
@@ -108,7 +108,7 @@ $this->title = 'Analytics';
     </div>
 
     <!-- Full Width Trend Chart -->
-    <div class="chart-card">
+    <div class="chart-card glass-card">
         <div class="chart-card-header">
             <h3 class="text-h3" style="margin: 0;">7-Day Moisture & Temperature Trend</h3>
             <div style="display: flex; gap: var(--space-4); align-items: center;">
@@ -123,7 +123,7 @@ $this->title = 'Analytics';
 
     <?php if (!Yii::$app->user->isGuest && Yii::$app->user->identity->role === 'admin'): ?>
     <!-- Admin-Only: Aggregated Analytics Data -->
-    <div class="chart-card">
+    <div class="chart-card glass-card">
         <div class="analytics-data-header">
             <div style="display: flex; align-items: center; gap: var(--space-3);">
                 <h3 class="text-h3" style="margin: 0;">Aggregated Sensor Data</h3>
