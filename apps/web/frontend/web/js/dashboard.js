@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // --- 3. Load Device Health ---
+    // --- 3. Load Device Health (Grouped by Plant Type) ---
     async function loadDeviceHealth() {
         const listEl = document.getElementById('device-health-list');
         if(!listEl) return;
@@ -160,39 +160,61 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
+            // Group by plant type
+            const grouped = {};
             devices.forEach(d => {
-                const isOnline = d.status === 'online';
-                const statusColor = isOnline ? '#10B981' : '#EF4444';
-                const badgeClass = isOnline ? 'ds-badge-success' : 'ds-badge-danger';
+                const pt = d.plant_type || 'Uncategorized';
+                if (!grouped[pt]) grouped[pt] = [];
+                grouped[pt].push(d);
+            });
+            
+            // Reset grid
+            listEl.style.cssText = 'display: flex; flex-direction: column; gap: var(--space-5);';
+            
+            for (const [plantType, devs] of Object.entries(grouped)) {
+                let imgName = plantType.toLowerCase() === 'uncategorized' ? 'hero/hero_bg.jpg' : `plants/${plantType.toLowerCase()}_1.jpg`;
+                if(plantType.toLowerCase() === 'terong') imgName = 'plants/terong_1.jpg';
+                if(plantType.toLowerCase() === 'tomat') imgName = 'plants/tomat_1.jpg';
+                if(plantType.toLowerCase() === 'cabai') imgName = 'plants/cabai_1.jpg';
+                if(plantType.toLowerCase() === 'stroberi') imgName = 'plants/stroberi.jpg';
+                if(plantType.toLowerCase() === 'anggur') imgName = 'plants/anggur.jpg';
+                if(plantType.toLowerCase() === 'timun') imgName = 'plants/timun.jpg';
+                if(plantType.toLowerCase() === 'kangkung') imgName = 'plants/kangkung.jpg';
                 
-                // Mock uptime and signal for visual realism matching reference
-                const uptime = isOnline ? (95 + Math.random() * 4.9).toFixed(1) + '%' : 'N/A';
-                const signal = isOnline ? Math.floor(70 + Math.random() * 30) + '%' : 'N/A';
+                const groupCard = document.createElement('div');
+                groupCard.className = 'glass-card';
+                groupCard.style.cssText = 'display: flex; flex-direction: column; md:flex-direction: row; gap: var(--space-4); overflow: hidden; padding: 0;';
                 
-                const card = document.createElement('div');
-                card.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 12px; border: 1px solid var(--gray-100); border-radius: 8px; background-color: #FAFAFA;';
-                card.innerHTML = `
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <svg class="w-5 h-5" style="color: ${statusColor}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"></path></svg>
-                        <div>
-                            <p class="text-body font-bold" style="color: var(--gray-900); margin: 0 0 4px 0;">${d.name}</p>
-                            <p class="text-caption text-gray-500" style="margin: 0;">${d.device_code}</p>
+                let devHtml = '';
+                devs.forEach(d => {
+                    const isOnline = d.status === 'online';
+                    const statusColor = isOnline ? '#10B981' : '#EF4444';
+                    const badgeClass = isOnline ? 'ds-badge-success' : 'ds-badge-danger';
+                    const uptime = isOnline ? (95 + Math.random() * 4.9).toFixed(1) + '%' : 'N/A';
+                    
+                    devHtml += `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border: 1px solid var(--gray-100); border-radius: 8px; background-color: #FAFAFA; margin-bottom: 8px;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <svg class="w-5 h-5" style="color: ${statusColor}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"></path></svg>
+                                <div>
+                                    <p class="text-body font-bold" style="color: var(--gray-900); margin: 0 0 4px 0;">${d.name}</p>
+                                    <p class="text-caption text-gray-500" style="margin: 0;">${d.device_code}</p>
+                                </div>
+                            </div>
+                            <span class="ds-badge ${badgeClass}">${d.status}</span>
                         </div>
-                    </div>
-                    <div style="display: flex; gap: 16px; align-items: center; text-align: center;">
-                        <div style="display: none; @media(min-width: 640px){ display: block; }">
-                            <p class="text-caption text-gray-500" style="margin: 0 0 4px 0;">Uptime</p>
-                            <p class="text-body font-bold" style="color: var(--gray-900); margin: 0;">${uptime}</p>
-                        </div>
-                        <div style="display: none; @media(min-width: 640px){ display: block; }">
-                            <p class="text-caption text-gray-500" style="margin: 0 0 4px 0;">Signal</p>
-                            <p class="text-body font-bold" style="color: var(--gray-900); margin: 0;">${signal}</p>
-                        </div>
-                        <span class="ds-badge ${badgeClass}">${d.status}</span>
+                    `;
+                });
+                
+                groupCard.innerHTML = `
+                    <div style="width: 100%; min-height: 150px; background-image: url('${window.appBaseUrl || ''}/images/${imgName}'); background-size: cover; background-position: center; border-radius: var(--radius-md) var(--radius-md) 0 0; @media(min-width: 768px){ width: 250px; min-height: auto; border-radius: var(--radius-md) 0 0 var(--radius-md); }"></div>
+                    <div style="flex: 1; padding: var(--space-5);">
+                        <h4 class="text-h4" style="margin-top: 0; margin-bottom: var(--space-4); color: var(--gray-900);">Tanaman ${plantType}</h4>
+                        ${devHtml}
                     </div>
                 `;
-                listEl.appendChild(card);
-            });
+                listEl.appendChild(groupCard);
+            }
         } catch(e) {
             listEl.innerHTML = '<p class="text-red-500">Failed to load devices.</p>';
         }

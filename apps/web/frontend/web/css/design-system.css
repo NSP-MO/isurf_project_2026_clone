@@ -230,14 +230,39 @@ body {
   }
   .ds-overlay {
     display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(15, 23, 42, 0.5); /* gray-900 */
-    z-index: 40;
   }
   .ds-overlay.open {
     display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 40;
   }
+}
+
+/* Guest Sidebar (Always Collapsed Default) */
+.ds-sidebar-collapsed {
+  position: fixed !important;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  height: 100dvh;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+.ds-sidebar-collapsed.open {
+  transform: translateX(0);
+}
+
+.ds-overlay-guest {
+  display: none;
+}
+.ds-overlay-guest.open {
+  display: block;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 40;
 }
 
 /* -------------------------------------

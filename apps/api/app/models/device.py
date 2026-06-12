@@ -9,6 +9,7 @@ class Device(Base):
     device_code = Column(String(100), unique=True, index=True, nullable=False)
     name = Column(String(255), nullable=False)
     type = Column(String(100))
+    plant_type = Column(String(100), nullable=True)
     location = Column(String(255))
     status = Column(String(50), default="offline")
     last_heartbeat = Column(DateTime)

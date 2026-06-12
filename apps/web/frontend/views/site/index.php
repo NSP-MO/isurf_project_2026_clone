@@ -9,9 +9,32 @@ $this->registerJsFile('@web/js/isurf-api.js', ['depends' => [\yii\web\JqueryAsse
 $this->registerJsFile('https://cdn.jsdelivr.net/npm/chart.js', ['depends' => [\yii\web\JqueryAsset::class]]);
 $this->registerJsFile('@web/js/dashboard.js', ['depends' => [\yii\web\JqueryAsset::class]]);
 ?>
+<script>
+    window.appBaseUrl = '<?= yii\helpers\Url::to('@web') ?>';
+</script>
 
 <!-- Minimalist Industrial Design Dashboard (AgriSmart Inspired) -->
-<div style="display: flex; flex-direction: column; gap: var(--space-6);">
+<?php if (Yii::$app->user->isGuest): ?>
+<!-- Guest Hero Section -->
+<div style="position: relative; width: 100%; min-height: 80vh; display: flex; align-items: center; justify-content: center; margin-bottom: var(--space-8); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--elevation-2);">
+    <!-- Background Image with Overlay -->
+    <div style="position: absolute; inset: 0; background-image: url('<?= yii\helpers\Url::to('@web/images/hero/hero_bg.jpg') ?>'); background-size: cover; background-position: center; filter: brightness(0.4) saturate(1.2);"></div>
+    <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(30, 58, 138, 0.4), rgba(15, 23, 42, 0.7));"></div>
+    
+    <!-- Hero Content -->
+    <div style="position: relative; z-index: 10; text-align: center; color: white; padding: var(--space-6); max-width: 800px;">
+        <h4 style="font-size: 14px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: var(--space-3); color: var(--primary-300);">IPB UNIVERSITY</h4>
+        <h1 style="font-size: 80px; font-weight: 900; margin: 0 0 var(--space-4) 0; letter-spacing: -0.02em; line-height: 1; text-shadow: 0 4px 20px rgba(0,0,0,0.3); color: #67E8F9;">ISURF</h1>
+        <h2 style="font-size: 24px; font-weight: 500; margin-bottom: var(--space-6); color: rgba(255,255,255,0.9);">Smart Greenhouse Monitoring System</h2>
+        
+        <a href="#dashboard-content" style="display: inline-block; background-color: #06B6D4; color: white; font-weight: 600; padding: 12px 32px; border-radius: 8px; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 14px rgba(6, 182, 212, 0.4);">
+            Selengkapnya
+        </a>
+    </div>
+</div>
+<?php endif; ?>
+
+<div id="dashboard-content" style="display: flex; flex-direction: column; gap: var(--space-6);">
     
     <!-- Header -->
     <div style="display: flex; flex-direction: column; gap: var(--space-2);">

@@ -78,6 +78,20 @@ $this->title = 'Device Management';
                 </select>
             </div>
             <div style="margin-bottom: 16px;">
+                <label class="text-caption font-medium" style="display: block; margin-bottom: 8px;">Jenis Tanaman</label>
+                <select id="newDevPlantType" style="width: 100%; padding: 8px; border: 1px solid var(--gray-300); border-radius: 4px;">
+                    <option value="">-- Pilih Jenis Tanaman --</option>
+                    <option value="Terong">Terong</option>
+                    <option value="Tomat">Tomat</option>
+                    <option value="Cabai">Cabai</option>
+                    <option value="Stroberi">Stroberi</option>
+                    <option value="Anggur">Anggur</option>
+                    <option value="Timun">Timun / Mentimun</option>
+                    <option value="Kangkung">Kangkung</option>
+                    <option value="Lainnya">Lainnya</option>
+                </select>
+            </div>
+            <div style="margin-bottom: 16px;">
                 <label class="text-caption font-medium" style="display: block; margin-bottom: 8px;">Posisi/Rak (dalam Lab)</label>
                 <input type="text" id="newDevLocation" style="width: 100%; padding: 8px; border: 1px solid var(--gray-300); border-radius: 4px;" placeholder="cth: Rak Tomat A">
             </div>
@@ -223,6 +237,7 @@ function openAddDeviceModal() {
     document.getElementById('newDevName').value = '';
     document.getElementById('newDevCode').value = '';
     document.getElementById('newDevLocation').value = '';
+    document.getElementById('newDevPlantType').value = '';
     document.getElementById('addDeviceModal').style.display = 'flex';
 }
 
@@ -234,6 +249,7 @@ async function submitNewDevice() {
     const name = document.getElementById('newDevName').value;
     const code = document.getElementById('newDevCode').value;
     const type = document.getElementById('newDevType').value;
+    const plantType = document.getElementById('newDevPlantType').value;
     const loc = document.getElementById('newDevLocation').value;
 
     if (!name || !code) {
@@ -250,6 +266,7 @@ async function submitNewDevice() {
             name: name,
             device_code: code,
             type: type,
+            plant_type: plantType,
             location: loc
         });
         
