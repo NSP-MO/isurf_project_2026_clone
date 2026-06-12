@@ -33,7 +33,7 @@ $this->title = 'Analytics';
             </div>
         </div>
 
-        <div class="summary-card">
+        <div class="summary-card glass-card">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
                     <p class="text-caption" style="color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin: 0;">Water Used</p>
@@ -49,7 +49,7 @@ $this->title = 'Analytics';
             </div>
         </div>
 
-        <div class="summary-card">
+        <div class="summary-card glass-card">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
                     <p class="text-caption" style="color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin: 0;">Alerts</p>
@@ -85,7 +85,7 @@ $this->title = 'Analytics';
     <!-- Charts Row -->
     <div class="ds-grid ds-grid-cols-1 lg-grid-cols-2-1">
         <!-- Water Consumption Bar Chart -->
-        <div class="chart-card">
+        <div class="chart-card glass-card">
             <div class="chart-card-header">
                 <h3 class="text-h3" style="margin: 0;">Water Consumption</h3>
                 <span class="text-caption" style="color: var(--gray-400);">Liters per day</span>
@@ -96,7 +96,7 @@ $this->title = 'Analytics';
         </div>
 
         <!-- Sensor Comparison Radar Chart -->
-        <div class="chart-card">
+        <div class="chart-card glass-card">
             <div class="chart-card-header">
                 <h3 class="text-h3" style="margin: 0;">Sensor Health</h3>
                 <span class="text-caption" style="color: var(--gray-400);">Normalized scores</span>
@@ -294,10 +294,7 @@ $this->title = 'Analytics';
     cursor: pointer;
 }
 .summary-card {
-    background: white;
     padding: var(--space-4);
-    border-radius: var(--radius-md);
-    box-shadow: var(--elevation-1);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -332,10 +329,7 @@ $this->title = 'Analytics';
 .trend-down { color: var(--danger); }
 /* Charts */
 .chart-card {
-    background: white;
     padding: var(--space-5);
-    border-radius: var(--radius-md);
-    box-shadow: var(--elevation-1);
 }
 .chart-card-header {
     display: flex;

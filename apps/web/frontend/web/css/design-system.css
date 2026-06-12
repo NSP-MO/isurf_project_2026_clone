@@ -79,11 +79,37 @@ body {
 .text-caption { font-size: 12px; font-weight: 400; line-height: 1.5; }
 
 /* -------------------------------------
- * Atoms - Utilities
+ * Atoms - Utilities & Glassmorphism
  * ------------------------------------- */
 .bg-primary { background-color: var(--primary-500); }
 .text-primary { color: var(--primary-500); }
 .bg-gray-100 { background-color: var(--gray-100); }
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
 
 /* -------------------------------------
  * Organisms - Sensor Card

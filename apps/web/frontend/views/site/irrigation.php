@@ -15,7 +15,7 @@ $this->title = 'Irrigation Control';
 
     <div class="ds-grid ds-grid-cols-1 lg-grid-cols-1-2">
         <!-- Control Panel -->
-        <div style="background: white; padding: var(--space-5); border-radius: var(--radius-md); box-shadow: var(--elevation-1);">
+        <div class="glass-card">
             <h3 class="text-h3" style="margin-bottom: var(--space-4);">Manual Override</h3>
             
             <div style="display: flex; justify-content: center; padding: var(--space-6) 0;">
@@ -27,7 +27,7 @@ $this->title = 'Irrigation Control';
         </div>
 
         <!-- Schedules -->
-        <div style="background: white; padding: var(--space-5); border-radius: var(--radius-md); box-shadow: var(--elevation-1);">
+        <div class="glass-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
                 <h3 class="text-h3">Active Schedules</h3>
                 <button class="ds-btn-primary" onclick="openAddModal()" style="padding: var(--space-1) var(--space-3); font-size: 12px;">+ Add</button>

@@ -23,7 +23,7 @@ $this->registerJsFile('@web/js/dashboard.js', ['depends' => [\yii\web\JqueryAsse
     <div class="ds-grid ds-grid-cols-1 md-grid-cols-2 lg-grid-cols-4">
         
         <!-- TDS Card -->
-        <div style="background: white; border-radius: var(--radius-md); box-shadow: 0 1px 3px rgba(0,0,0,0.05); padding: var(--space-5); border: 1px solid var(--gray-100);">
+        <div class="glass-card">
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-4);">
                 <div style="padding: 8px; background-color: #EFF6FF; border-radius: 50%; color: #3B82F6;">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
@@ -42,7 +42,7 @@ $this->registerJsFile('@web/js/dashboard.js', ['depends' => [\yii\web\JqueryAsse
         </div>
 
         <!-- pH Level Card -->
-        <div style="background: white; border-radius: var(--radius-md); box-shadow: 0 1px 3px rgba(0,0,0,0.05); padding: var(--space-5); border: 1px solid var(--gray-100);">
+        <div class="glass-card">
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-4);">
                 <div style="padding: 8px; background-color: #FEF2F2; border-radius: 50%; color: #EF4444;">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547"></path></svg>
@@ -61,7 +61,7 @@ $this->registerJsFile('@web/js/dashboard.js', ['depends' => [\yii\web\JqueryAsse
         </div>
 
         <!-- Temperature Card -->
-        <div style="background: white; border-radius: var(--radius-md); box-shadow: 0 1px 3px rgba(0,0,0,0.05); padding: var(--space-5); border: 1px solid var(--gray-100);">
+        <div class="glass-card">
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-4);">
                 <div style="padding: 8px; background-color: #ECFEFF; border-radius: 50%; color: #06B6D4;">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
@@ -80,7 +80,7 @@ $this->registerJsFile('@web/js/dashboard.js', ['depends' => [\yii\web\JqueryAsse
         </div>
 
         <!-- Active Nodes Card -->
-        <div style="background: white; border-radius: var(--radius-md); box-shadow: 0 1px 3px rgba(0,0,0,0.05); padding: var(--space-5); border: 1px solid var(--gray-100);">
+        <div class="glass-card">
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-4);">
                 <div style="padding: 8px; background-color: #FEF9C3; border-radius: 50%; color: #EAB308;">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"></path></svg>
@@ -102,7 +102,7 @@ $this->registerJsFile('@web/js/dashboard.js', ['depends' => [\yii\web\JqueryAsse
     <div class="ds-grid ds-grid-cols-1 lg-grid-cols-2">
         
         <!-- Quality Trend Chart -->
-        <div style="background: white; padding: var(--space-5); border-radius: var(--radius-md); box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid var(--gray-100); display: flex; flex-direction: column;">
+        <div class="glass-card" style="display: flex; flex-direction: column;">
             <div style="margin-bottom: var(--space-4);">
                 <h3 class="text-h3" style="font-weight: 600; color: var(--gray-900);">Water Quality Trend</h3>
                 <p class="text-caption text-gray-500">Last 24 hours</p>
@@ -113,7 +113,7 @@ $this->registerJsFile('@web/js/dashboard.js', ['depends' => [\yii\web\JqueryAsse
         </div>
 
         <!-- Temperature Trend Chart -->
-        <div style="background: white; padding: var(--space-5); border-radius: var(--radius-md); box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid var(--gray-100); display: flex; flex-direction: column;">
+        <div class="glass-card" style="display: flex; flex-direction: column;">
             <div style="margin-bottom: var(--space-4);">
                 <h3 class="text-h3" style="font-weight: 600; color: var(--gray-900);">Temperature Trend</h3>
                 <p class="text-caption text-gray-500">Last 24 hours</p>
@@ -129,7 +129,7 @@ $this->registerJsFile('@web/js/dashboard.js', ['depends' => [\yii\web\JqueryAsse
         
         <?php if (!Yii::$app->user->isGuest): ?>
         <!-- Irrigation Control -->
-        <div style="background: white; padding: var(--space-5); border-radius: var(--radius-md); box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid var(--gray-100);">
+        <div class="glass-card">
             <h3 class="text-h3" style="font-weight: 600; color: var(--gray-900); margin-bottom: var(--space-4);">Irrigation Control</h3>
             
             <div style="border: 1px solid var(--gray-100); border-radius: var(--radius-md); padding: var(--space-4); margin-bottom: var(--space-4); background-color: var(--gray-50);">
@@ -164,8 +164,8 @@ $this->registerJsFile('@web/js/dashboard.js', ['depends' => [\yii\web\JqueryAsse
         </div>
         <?php endif; ?>
 
-        <!-- Recent Alerts -->
-        <div style="background: white; padding: var(--space-5); border-radius: var(--radius-md); box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid var(--gray-100);">
+        <!-- System Alerts -->
+        <div class="glass-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
                 <h3 class="text-h3" style="font-weight: 600; color: var(--gray-900);">Recent Alerts</h3>
                 <a href="#" style="color: var(--primary-600); font-weight: 600; font-size: 13px; text-decoration: none;">View All</a>

@@ -12,7 +12,7 @@ AppAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
-<html lang="<?= Yii::$app->language ?>" class="h-full" style="background-color: var(--gray-50);">
+<html lang="<?= Yii::$app->language ?>" class="h-full">
 <head>
     <meta charset="<?= Yii::$app->charset ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -41,14 +41,14 @@ AppAsset::register($this);
 
     <?php $this->head() ?>
 </head>
-<body class="h-full text-gray-900 antialiased flex overflow-hidden m-0 p-0">
+<body class="h-full text-gray-900 antialiased flex overflow-hidden m-0 p-0" style="background-color: #f0fdf4; background-image: radial-gradient(at 10% 20%, hsla(140, 100%, 94%, 1) 0px, transparent 50%), radial-gradient(at 90% 10%, hsla(160, 100%, 92%, 1) 0px, transparent 50%), radial-gradient(at 50% 90%, hsla(200, 100%, 92%, 1) 0px, transparent 50%), radial-gradient(at 80% 80%, hsla(120, 100%, 90%, 1) 0px, transparent 50%);">
 <?php $this->beginBody() ?>
 
 <!-- Mobile Overlay -->
 <div id="sidebar-overlay" class="ds-overlay transition-opacity duration-300"></div>
 
 <!-- Sidebar -->
-<aside id="main-sidebar" class="ds-sidebar ds-sidebar-mobile md:static flex flex-col h-[100dvh] shrink-0 border-r">
+<aside id="main-sidebar" class="ds-sidebar ds-sidebar-mobile md:static flex flex-col h-[100dvh] shrink-0 border-r border-white/40 glass-panel">
     <div class="flex items-center gap-3 px-6" style="height: 80px; border-bottom: 1px solid var(--gray-100);">
         <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
             <svg viewBox="0 0 100 100" width="36" height="36" xmlns="http://www.w3.org/2000/svg">
@@ -156,10 +156,10 @@ AppAsset::register($this);
 </aside>
 
 <!-- Main Content Area -->
-<div class="flex-1 flex flex-col min-w-0 overflow-hidden" style="background-color: var(--gray-50);">
+<div class="flex-1 flex flex-col min-w-0 overflow-hidden">
     
     <!-- Top Header -->
-    <header class="bg-white flex items-center justify-between shrink-0 z-10" style="height: 64px; padding: 0 var(--space-5) 0 var(--space-3); box-shadow: var(--elevation-1);">
+    <header class="glass-panel flex items-center justify-between shrink-0 z-10" style="height: 64px; padding: 0 var(--space-5) 0 var(--space-3); border-bottom: 1px solid rgba(255,255,255,0.4); box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
         <div class="flex items-center gap-1">
             <button id="open-sidebar" class="md:hidden text-gray-500 hover:text-gray-700 focus:outline-none p-1" aria-label="Open sidebar">
                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
