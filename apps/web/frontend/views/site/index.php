@@ -280,7 +280,8 @@ $this->registerJsFile('@web/js/dashboard.js?v=' . time(), ['depends' => [\yii\we
     }
     .plant-group-img {
         width: 250px;
-        min-height: auto;
+        min-height: 150px;
+        align-self: stretch;
         border-radius: var(--radius-md) 0 0 var(--radius-md);
     }
 }
