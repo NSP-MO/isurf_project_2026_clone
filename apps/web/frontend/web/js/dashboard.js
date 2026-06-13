@@ -1,279 +1,222 @@
 // dashboard.js
 
-let qualityChartInstance = null;
 let tempChartInstance = null;
+let waterChartInstance = null;
 
 document.addEventListener('DOMContentLoaded', function() {
     
     // --- 1. Fetch and Update Metrics ---
     async function updateDashboardMetrics() {
-        const data = await iSurfAPI.getLatestReadings();
-        if (!data) return;
+        try {
+            const data = await ISURF_API.getLatestReadings();
+            
+            // Map latest reading per data_type globally
+            const latestByType = {};
+            if (data && data.length > 0) {
+            for (const item of data) {
+                latestByType[item.data_type] = item;
+            }
+        }
 
         const mappings = {
-            'Water Quality (TDS)': { val: 'metric-tds', status: 'status-tds' },
-            'Water pH Level': { val: 'metric-ph', status: 'status-ph' },
-            'Air Temperature': { val: 'metric-temp', status: 'status-temp' }
+            'Suhu Udara': { val: 'metric-temp', status: 'status-temp' },
+            'Kelembaban Udara': { val: 'metric-humidity', status: 'status-humidity' }
         };
 
         for (const [sensorName, uiIds] of Object.entries(mappings)) {
-            if (data[sensorName]) {
-                const reading = data[sensorName];
+            if (latestByType[sensorName]) {
+                const reading = latestByType[sensorName];
                 const valEl = document.getElementById(uiIds.val);
-                if (valEl) valEl.textContent = reading.value;
+                if (valEl) valEl.textContent = reading.avg_value.toFixed(1);
 
                 if (uiIds.status) {
                     const statEl = document.getElementById(uiIds.status);
-                    if (sensorName.includes('pH')) {
-                        if(reading.value < 5.5 || reading.value > 7.5) {
-                            statEl.textContent = 'warning';
+                    if (sensorName === 'Suhu Udara') {
+                        if(reading.avg_value > 30 || reading.avg_value < 15) {
+                            statEl.textContent = 'Peringatan';
                             statEl.className = 'ds-badge ds-badge-warning';
                         } else {
-                            statEl.textContent = 'optimal';
+                            statEl.textContent = 'Normal';
                             statEl.className = 'ds-badge ds-badge-success';
                         }
-                    } else if (sensorName.includes('Temperature')) {
-                        if(reading.value > 30) {
-                            statEl.textContent = 'hot';
-                            statEl.className = 'ds-badge ds-badge-danger';
-                        } else {
-                            statEl.textContent = 'good';
-                            statEl.className = 'ds-badge ds-badge-info';
-                        }
-                    } else if (sensorName.includes('TDS')) {
-                        if(reading.value > 800) {
-                            statEl.textContent = 'high';
+                    } else if (sensorName === 'Kelembaban Udara') {
+                        if(reading.avg_value < 40 || reading.avg_value > 80) {
+                            statEl.textContent = 'Peringatan';
                             statEl.className = 'ds-badge ds-badge-warning';
                         } else {
-                            statEl.textContent = 'optimal';
+                            statEl.textContent = 'Normal';
                             statEl.className = 'ds-badge ds-badge-success';
                         }
+                    }
+                }
+            } else {
+                const valEl = document.getElementById(uiIds.val);
+                if (valEl) valEl.textContent = '--';
+                if (uiIds.status) {
+                    const statEl = document.getElementById(uiIds.status);
+                    if(statEl) {
+                        statEl.textContent = 'Offline';
+                        statEl.className = 'ds-badge ds-badge-danger';
                     }
                 }
             }
         }
         
-        try {
-            const devices = await iSurfAPI.getDevices();
-            const onlineCount = devices.filter(d => d.status === 'online').length;
-            const totalCount = devices.length;
-            
-            const nodesEl = document.getElementById('metric-nodes');
-            if(nodesEl) nodesEl.textContent = onlineCount;
-            
-            const totalEl = document.getElementById('total-devices');
-            if(totalEl) totalEl.textContent = totalCount;
-            
-            const lastUpdEl = document.getElementById('last-updated');
-            if(lastUpdEl) lastUpdEl.textContent = iSurfAPI.formatTimeWithTZ(new Date());
-        } catch (e) {
-            console.error("Failed to fetch device stats", e);
+        // Fetch Water Usage
+        const waterData = await ISURF_API.getWaterUsage();
+        const waterValEl = document.getElementById('metric-water');
+        if (waterValEl) waterValEl.textContent = waterData.remaining;
+        const waterStatEl = document.getElementById('status-water');
+        if (waterStatEl) {
+            waterStatEl.textContent = 'Cukup';
+            waterStatEl.className = 'ds-badge ds-badge-success';
+            if (waterData.remaining < 200) {
+                waterStatEl.textContent = 'Kritis';
+                waterStatEl.className = 'ds-badge ds-badge-danger';
+            }
+        }
+
+        // Admin Only: Fetch Pending Requests
+        if (!window.isGuestUser) {
+            try {
+                const requests = await ISURF_API.getDataRequests();
+                const pendingCount = requests.filter(r => r.status === 'PENDING').length;
+                
+                const reqValEl = document.getElementById('metric-requests');
+                if (reqValEl) reqValEl.textContent = pendingCount;
+                
+                const reqStatEl = document.getElementById('status-requests');
+                if (reqStatEl) {
+                    if (pendingCount > 0) {
+                        reqStatEl.textContent = 'Menunggu';
+                        reqStatEl.className = 'ds-badge ds-badge-warning';
+                    } else {
+                        reqStatEl.textContent = 'Selesai';
+                        reqStatEl.className = 'ds-badge ds-badge-success';
+                    }
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        
+        } catch (error) {
+            console.error("Gagal terhubung ke API Server:", error);
+            document.querySelectorAll('[id^="status-"]').forEach(el => {
+                el.textContent = 'Server Offline';
+                el.className = 'ds-badge ds-badge-danger';
+            });
+            document.querySelectorAll('[id^="metric-"]').forEach(el => {
+                if(el) el.textContent = 'Err';
+            });
         }
     }
 
-    // --- 2. Chart.js Initialization ---
-    function initCharts() {
-        const blue500 = '#3B82F6';
-        const green500 = '#10B981';
-        const orange500 = '#F97316';
+    // --- 2. Build Charts ---
+    async function loadTempChart(hours) {
+        const tempCtx = document.getElementById('tempChart');
+        if (!tempCtx) return;
         
-        const qCtx = document.getElementById('qualityChart');
-        if (qCtx) {
-            qualityChartInstance = new Chart(qCtx, {
+        const areaId = 1; // Default to area 1 for now
+        const tempData = await ISURF_API.getHistory(areaId, 'Suhu Udara', hours);
+        const labels = tempData.map(d => ISURF_API.formatTimestamp(d.timestamp).split(' ')[0]);
+        const vals = tempData.map(d => d.avg_value);
+
+        if (tempChartInstance) {
+            tempChartInstance.data.labels = labels;
+            tempChartInstance.data.datasets[0].data = vals;
+            tempChartInstance.update();
+        } else {
+            tempChartInstance = new Chart(tempCtx, {
                 type: 'line',
                 data: {
-                    labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'],
+                    labels: labels,
                     datasets: [
                         {
-                            label: 'TDS (ppm)',
-                            data: [420, 430, 425, 450, 480, 460, 440],
-                            borderColor: blue500,
-                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                            tension: 0.4,
+                            label: 'Suhu Udara (°C)',
+                            data: vals,
+                            borderColor: '#F87171',
+                            backgroundColor: 'rgba(248, 113, 113, 0.1)',
                             fill: true,
-                            yAxisID: 'y'
-                        },
-                        {
-                            label: 'pH Level',
-                            data: [6.5, 6.4, 6.6, 6.2, 6.1, 6.3, 6.5],
-                            borderColor: green500,
-                            backgroundColor: 'transparent',
-                            tension: 0.4,
-                            yAxisID: 'y1'
+                            tension: 0.4
                         }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom' } },
+                    plugins: { legend: { display: false } },
                     scales: {
-                        y: { type: 'linear', display: true, position: 'left', grid: { color: '#f1f5f9' } },
-                        y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false } },
-                        x: { grid: { display: false } }
+                        y: { grid: { color: 'rgba(255, 255, 255, 0.05)' } },
+                        x: { grid: { display: false }, ticks: { maxTicksLimit: 8 } }
                     }
                 }
             });
         }
+    }
 
-        const tCtx = document.getElementById('tempChart');
-        if (tCtx) {
-            tempChartInstance = new Chart(tCtx, {
-                type: 'line',
+    async function loadWaterChart(hours) {
+        const waterCtx = document.getElementById('waterChart');
+        if (!waterCtx) return;
+        
+        const waterData = await ISURF_API.getWaterUsage(hours);
+        const labels = waterData.history.map(d => ISURF_API.formatTimestamp(d.timestamp).split(' ')[0]);
+        const vals = waterData.history.map(d => d.value);
+
+        if (waterChartInstance) {
+            waterChartInstance.data.labels = labels;
+            waterChartInstance.data.datasets[0].data = vals;
+            waterChartInstance.update();
+        } else {
+            waterChartInstance = new Chart(waterCtx, {
+                type: 'bar',
                 data: {
-                    labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'],
+                    labels: labels,
                     datasets: [
                         {
-                            label: 'Temperature (°C)',
-                            data: [22, 21, 24, 28, 29, 26, 23],
-                            borderColor: orange500,
-                            backgroundColor: 'rgba(249, 115, 22, 0.1)',
-                            tension: 0.4,
-                            fill: true
+                            label: 'Penggunaan Air (L)',
+                            data: vals,
+                            backgroundColor: '#60A5FA',
+                            borderRadius: 4
                         }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom' } },
+                    plugins: { legend: { display: false } },
                     scales: {
-                        y: { beginAtZero: false, grid: { color: '#f1f5f9' } },
-                        x: { grid: { display: false } }
+                        y: { grid: { color: 'rgba(255, 255, 255, 0.05)' } },
+                        x: { grid: { display: false }, ticks: { maxTicksLimit: 12 } }
                     }
                 }
             });
         }
     }
 
-    // --- 3. Load Device Health (Grouped by Plant Type) ---
-    async function loadDeviceHealth() {
-        const listEl = document.getElementById('device-health-list');
-        if(!listEl) return;
-        
-        try {
-            const devices = await iSurfAPI.getDevices();
-            listEl.innerHTML = '';
-            
-            if(devices.length === 0) {
-                listEl.innerHTML = '<p class="text-gray-500">No devices registered.</p>';
-                return;
-            }
-            
-            // Group by plant type
-            const grouped = {};
-            devices.forEach(d => {
-                const pt = d.plant_type || 'Uncategorized';
-                if (!grouped[pt]) grouped[pt] = [];
-                grouped[pt].push(d);
-            });
-            
-            // Reset grid
-            listEl.style.cssText = 'display: flex; flex-direction: column; gap: var(--space-5);';
-            
-            for (const [plantType, devs] of Object.entries(grouped)) {
-                let imgName = plantType.toLowerCase() === 'uncategorized' ? 'hero/hero_bg.jpg' : `plants/${plantType.toLowerCase()}_1.jpg`;
-                if(plantType.toLowerCase() === 'terong') imgName = 'plants/terong_1.jpg';
-                if(plantType.toLowerCase() === 'tomat') imgName = 'plants/tomat_1.jpg';
-                if(plantType.toLowerCase() === 'cabai') imgName = 'plants/cabai_1.jpg';
-                if(plantType.toLowerCase() === 'stroberi') imgName = 'plants/stroberi.jpg';
-                if(plantType.toLowerCase() === 'anggur') imgName = 'plants/anggur.jpg';
-                if(plantType.toLowerCase() === 'timun') imgName = 'plants/timun.jpg';
-                if(plantType.toLowerCase() === 'kangkung') imgName = 'plants/kangkung.jpg';
-                
-                const groupCard = document.createElement('div');
-                groupCard.className = 'glass-card plant-group-card';
-                
-                let devHtml = '';
-                devs.forEach(d => {
-                    const isOnline = d.status === 'online';
-                    const statusColor = isOnline ? '#10B981' : '#EF4444';
-                    const badgeClass = isOnline ? 'ds-badge-success' : 'ds-badge-danger';
-                    const uptime = isOnline ? (95 + Math.random() * 4.9).toFixed(1) + '%' : 'N/A';
-                    
-                    devHtml += `
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border: 1px solid var(--gray-100); border-radius: 8px; background-color: #FAFAFA; margin-bottom: 8px;">
-                            <div style="display: flex; align-items: center; gap: 12px;">
-                                <svg class="w-5 h-5" style="color: ${statusColor}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"></path></svg>
-                                <div>
-                                    <p class="text-body font-bold" style="color: var(--gray-900); margin: 0 0 4px 0;">${d.name}</p>
-                                    <p class="text-caption text-gray-500" style="margin: 0;">${d.device_code}</p>
-                                </div>
-                            </div>
-                            <span class="ds-badge ${badgeClass}">${d.status}</span>
-                        </div>
-                    `;
-                });
-                
-                groupCard.innerHTML = `
-                    <div class="plant-group-img" style="background-image: url('${window.appBaseUrl || ''}/images/${imgName}');"></div>
-                    <div style="flex: 1; padding: var(--space-5);">
-                        <h4 class="text-h4" style="margin-top: 0; margin-bottom: var(--space-4); color: var(--gray-900);">Tanaman ${plantType}</h4>
-                        ${devHtml}
-                    </div>
-                `;
-                listEl.appendChild(groupCard);
-            }
-        } catch(e) {
-            listEl.innerHTML = '<p class="text-red-500">Failed to load devices.</p>';
-        }
-    }
-
-    // --- 4. Irrigation Control (Dashboard context) ---
-    async function loadPumpStatus() {
-        const devices = await iSurfAPI.getDevices();
-        const irrigationDev = devices.find(d => d.type === 'esp32_irrigation');
-        
-        if(irrigationDev) {
-            window.dashboardIrrigationDevId = irrigationDev.id;
-            const res = await iSurfAPI.getPumpStatus(irrigationDev.id);
-            updatePumpUI(res.pump_on);
-        } else {
-            document.getElementById('dash-pump-status').textContent = 'No Controller Found';
-            document.getElementById('valve-btn').disabled = true;
-            document.getElementById('valve-btn').style.opacity = '0.5';
-        }
-    }
-
-    function updatePumpUI(isOn) {
-        window.isDashPumpOn = isOn;
-        const btn = document.getElementById('valve-btn');
-        const status = document.getElementById('dash-pump-status');
-        
-        if (isOn) {
-            btn.textContent = 'Turn Off';
-            btn.style.backgroundColor = '#EF4444'; // Red for Off
-            status.textContent = 'Active';
-            status.style.color = '#10B981'; // Green text
-        } else {
-            btn.textContent = 'Turn On';
-            btn.style.backgroundColor = 'var(--gray-700)';
-            status.textContent = 'Inactive';
-            status.style.color = 'var(--gray-500)';
-        }
-    }
-
-    window.toggleMainPump = async function() {
-        if(!window.dashboardIrrigationDevId) return;
-        const newState = !window.isDashPumpOn;
-        updatePumpUI(newState);
-        
-        const success = await iSurfAPI.triggerManualPump(window.dashboardIrrigationDevId, newState);
-        if(!success) {
-            alert('Failed to send command');
-            updatePumpUI(!newState); // revert
-        }
-    };
-
-    // Initial load and interval
+    // Initial load
     updateDashboardMetrics();
-    initCharts();
-    loadDeviceHealth();
-    loadPumpStatus();
-    
-    setInterval(() => {
-        updateDashboardMetrics();
-        loadDeviceHealth();
-        loadPumpStatus();
-    }, 30000); // Update every 30s
+    loadTempChart(24);
+    loadWaterChart(24);
+
+    // Event Listeners for Filters
+    const timeFilterTemp = document.getElementById('time-filter-temp');
+    if (timeFilterTemp) {
+        timeFilterTemp.addEventListener('change', (e) => {
+            const val = e.target.value;
+            const hours = val === '7d' ? 168 : (val === '30d' ? 720 : 24);
+            loadTempChart(hours);
+        });
+    }
+
+    const timeFilterWater = document.getElementById('time-filter-water');
+    if (timeFilterWater) {
+        timeFilterWater.addEventListener('change', (e) => {
+            const val = e.target.value;
+            const hours = val === '7d' ? 168 : (val === '30d' ? 720 : 24);
+            loadWaterChart(hours);
+        });
+    }
+
+    setInterval(updateDashboardMetrics, 30000);
 });

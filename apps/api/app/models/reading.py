@@ -1,14 +1,30 @@
-from sqlalchemy import Column, BigInteger, Integer, Float, DateTime, ForeignKey, func
+from sqlalchemy import Column, Integer, BigInteger, String, Float, Boolean, Date, Time, ForeignKey
 from sqlalchemy.orm import relationship
 from ..database import Base
 
-class SensorReading(Base):
-    __tablename__ = "sensor_readings"
+class SensorLog(Base):
+    __tablename__ = "sensor_logs"
 
-    id = Column(BigInteger, primary_key=True, index=True)
-    sensor_id = Column(Integer, ForeignKey("sensors.id", ondelete="CASCADE"), nullable=False)
-    device_id = Column(Integer, ForeignKey("devices.id", ondelete="CASCADE"), nullable=False)
-    value = Column(Float, nullable=False)
-    recorded_at = Column(DateTime, default=func.now(), index=True)
+    id = Column(BigInteger, primary_key=True, index=True, autoincrement=True)
+    date = Column(Date, index=True, nullable=False)
+    time = Column(Time, nullable=False)
+    reading = Column(Float, nullable=False)
+    anomalies = Column(Boolean, default=False)
+    status = Column(String(50), nullable=True) # "Normal", "Kritis"
+    sensor_id = Column(String(50), ForeignKey("sensors.id", ondelete="CASCADE"), nullable=False)
 
-    sensor = relationship("Sensor", back_populates="readings")
+    sensor = relationship("Sensor", back_populates="logs")
+
+class AreaAggregation(Base):
+    __tablename__ = "area_aggregations"
+
+    id = Column(BigInteger, primary_key=True, index=True, autoincrement=True)
+    date = Column(Date, index=True, nullable=False)
+    time = Column(Time, nullable=False)
+    data_type = Column(String(100), nullable=False)
+    min_value = Column(Float, nullable=True)
+    max_value = Column(Float, nullable=True)
+    avg_value = Column(Float, nullable=True)
+    area_id = Column(Integer, ForeignKey("areas.id", ondelete="CASCADE"), nullable=False)
+
+    area = relationship("Area", back_populates="aggregations")

@@ -30,48 +30,92 @@ $this->title = 'Request Data Download';
                 </div>
 
                 <div class="form-group" style="margin-bottom: var(--space-4);">
-                    <label class="text-caption font-medium text-gray-900" style="display: block; margin-bottom: 8px;">Tipe Data</label>
-                    <select name="data_type" required style="width: 100%; padding: 10px; border: 1px solid var(--gray-200); border-radius: var(--radius-sm); background: white;">
-                        <option value="monitoring">Raw Sensor Data (Monitoring)</option>
-                        <option value="analytics">Aggregated Data (Analytics)</option>
+                    <label class="text-caption font-medium text-gray-900" style="display: block; margin-bottom: 8px;">Area Tanam</label>
+                    <select name="area" required style="width: 100%; padding: 10px; border: 1px solid var(--gray-200); border-radius: var(--radius-sm); background: white;" id="requestAreaSelect">
+                        <option value="all">Semua Area</option>
+                        <!-- Area options will be loaded dynamically or hardcoded for now -->
                     </select>
                 </div>
 
                 <div class="form-group" style="margin-bottom: var(--space-4);">
-                    <label class="text-caption font-medium text-gray-900" style="display: block; margin-bottom: 8px;">Pilih Sensor (Bisa lebih dari satu)</label>
+                    <label class="text-caption font-medium text-gray-900" style="display: block; margin-bottom: 8px;">Kategori Log</label>
+                    <select name="log_category" id="logCategorySelect" onchange="updateParamOptions()" required style="width: 100%; padding: 10px; border: 1px solid var(--gray-200); border-radius: var(--radius-sm); background: white;">
+                        <option value="sensor">Log Sensor</option>
+                        <option value="actuator">Log Aktuator</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: var(--space-4);">
+                    <label class="text-caption font-medium text-gray-900" style="display: block; margin-bottom: 8px;">Parameter / Aktuator (Bisa lebih dari satu)</label>
                     <div style="display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--gray-200); padding: 12px; border-radius: var(--radius-sm); background: var(--gray-50);">
                         <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                            <input type="checkbox" name="sensor_all" value="all" checked onchange="toggleSensors(this)"> Semua Sensor
+                            <input type="checkbox" name="param_all" id="param_all" value="all" checked onchange="toggleSensors(this)"> Semua Parameter
                         </label>
                         <div style="height: 1px; background: var(--gray-200); margin: 4px 0;"></div>
-                        <div class="sensor-checkboxes" style="display: flex; flex-direction: column; gap: 8px; margin-left: 8px;">
+                        
+                        <div id="sensor-options" class="sensor-checkboxes" style="display: flex; flex-direction: column; gap: 8px; margin-left: 8px;">
                             <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                <input type="checkbox" name="sensors[]" value="moisture" class="sensor-cb" checked disabled> Soil Moisture
+                                <input type="checkbox" name="parameters[]" value="Suhu Udara" class="sensor-cb" checked disabled> Suhu Udara
                             </label>
                             <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                <input type="checkbox" name="sensors[]" value="ph" class="sensor-cb" checked disabled> Water pH
+                                <input type="checkbox" name="parameters[]" value="Kelembaban Udara" class="sensor-cb" checked disabled> Kelembaban Udara
                             </label>
                             <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                <input type="checkbox" name="sensors[]" value="tds" class="sensor-cb" checked disabled> TDS
+                                <input type="checkbox" name="parameters[]" value="Kelembaban Tanah" class="sensor-cb" checked disabled> Kelembaban Tanah
                             </label>
                             <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                <input type="checkbox" name="sensors[]" value="temperature" class="sensor-cb" checked disabled> Temperature
+                                <input type="checkbox" name="parameters[]" value="pH Tanah" class="sensor-cb" checked disabled> pH Tanah
                             </label>
                             <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                <input type="checkbox" name="sensors[]" value="ultrasonic" class="sensor-cb" checked disabled> Water Tank Level
+                                <input type="checkbox" name="parameters[]" value="pH Air" class="sensor-cb" checked disabled> pH Air
                             </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" name="parameters[]" value="Volume Air" class="sensor-cb" checked disabled> Volume Air
+                            </label>
+                        </div>
+
+                        <div id="actuator-options" class="sensor-checkboxes" style="display: none; flex-direction: column; gap: 8px; margin-left: 8px;">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" name="parameters[]" value="Pompa Air" class="actuator-cb" checked disabled> Pompa Air
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: var(--space-4);">
+                    <label class="text-caption font-medium text-gray-900" style="display: block; margin-bottom: 8px;">Kolom Atribut Data (Kolom apa saja yang mau di-download)</label>
+                    <div style="display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--gray-200); padding: 12px; border-radius: var(--radius-sm); background: var(--gray-50);">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" name="attr_all" id="attr_all" value="all" checked onchange="toggleAttributes(this)"> Semua Atribut Kolom
+                        </label>
+                        <div style="height: 1px; background: var(--gray-200); margin: 4px 0;"></div>
+                        
+                        <div id="sensor-attr-options" style="display: flex; flex-wrap: wrap; gap: 12px; margin-left: 8px;">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;"><input type="checkbox" name="attributes[]" value="date" class="sensor-attr-cb" checked disabled> Date (Tanggal)</label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;"><input type="checkbox" name="attributes[]" value="time" class="sensor-attr-cb" checked disabled> Time (Waktu)</label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;"><input type="checkbox" name="attributes[]" value="sensor_name" class="sensor-attr-cb" checked disabled> Sensor Name (Nama Sensor)</label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;"><input type="checkbox" name="attributes[]" value="reading" class="sensor-attr-cb" checked disabled> Reading (Nilai Bacaan)</label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;"><input type="checkbox" name="attributes[]" value="anomalies" class="sensor-attr-cb" checked disabled> Anomalies (Status Anomali)</label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;"><input type="checkbox" name="attributes[]" value="status" class="sensor-attr-cb" checked disabled> Status (Normal/Kritis)</label>
+                        </div>
+
+                        <div id="actuator-attr-options" style="display: none; flex-wrap: wrap; gap: 12px; margin-left: 8px;">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;"><input type="checkbox" name="attributes[]" value="timestamp" class="actuator-attr-cb" checked disabled> Timestamp (Waktu)</label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;"><input type="checkbox" name="attributes[]" value="actuator_name" class="actuator-attr-cb" checked disabled> Actuator Name (Nama Pompa)</label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;"><input type="checkbox" name="attributes[]" value="water_discharged" class="actuator-attr-cb" checked disabled> Water Discharged (Air Dikeluarkan)</label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;"><input type="checkbox" name="attributes[]" value="water_remaining" class="actuator-attr-cb" checked disabled> Water Remaining (Sisa Air Tangki)</label>
                         </div>
                     </div>
                 </div>
 
                 <div style="display: flex; flex-wrap: wrap; gap: var(--space-4); margin-bottom: var(--space-4);">
                     <div class="form-group" style="flex: 1 1 150px;">
-                        <label class="text-caption font-medium text-gray-900" style="display: block; margin-bottom: 8px;">Dari Tanggal</label>
-                        <input type="date" name="date_start" required style="width: 100%; padding: 10px; border: 1px solid var(--gray-200); border-radius: var(--radius-sm);">
+                        <label class="text-caption font-medium text-gray-900" style="display: block; margin-bottom: 8px;">Dari Waktu</label>
+                        <input type="datetime-local" name="datetime_start" required style="width: 100%; padding: 10px; border: 1px solid var(--gray-200); border-radius: var(--radius-sm);">
                     </div>
                     <div class="form-group" style="flex: 1 1 150px;">
-                        <label class="text-caption font-medium text-gray-900" style="display: block; margin-bottom: 8px;">Sampai Tanggal</label>
-                        <input type="date" name="date_end" required style="width: 100%; padding: 10px; border: 1px solid var(--gray-200); border-radius: var(--radius-sm);">
+                        <label class="text-caption font-medium text-gray-900" style="display: block; margin-bottom: 8px;">Sampai Waktu</label>
+                        <input type="datetime-local" name="datetime_end" required style="width: 100%; padding: 10px; border: 1px solid var(--gray-200); border-radius: var(--radius-sm);">
                     </div>
                 </div>
 
@@ -100,7 +144,8 @@ $this->title = 'Request Data Download';
                     <svg class="w-8 h-8" style="color: var(--primary-600);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                 </div>
                 <h3 class="text-h3" style="margin-bottom: var(--space-2);">Pengajuan Berhasil Dikirim</h3>
-                <p class="text-body text-gray-600 mb-4">Pengajuan Anda telah diterima oleh sistem. Detail pengajuan akan otomatis terkirim ke email Anda. Silakan tunggu tanggapan dari Admin melalui email.</p>
+                <p class="text-body text-gray-600 mb-4">Pengajuan Anda telah diterima oleh sistem. Kode Tiket Anda adalah: <strong id="trackingCodeDisplay" style="font-size: 18px; color: var(--primary-600);"></strong></p>
+                <p class="text-caption text-gray-500 mb-4">Silakan catat kode ini untuk mengecek status permohonan Anda ke Admin.</p>
                 <button onclick="location.reload()" class="ds-btn-primary" style="text-decoration: none;">Kembali ke Form</button>
             </div>
         </div>
@@ -109,30 +154,133 @@ $this->title = 'Request Data Download';
 
 <script>
 function toggleSensors(masterCheckbox) {
-    const checkboxes = document.querySelectorAll('.sensor-cb');
+    const category = document.getElementById('logCategorySelect').value;
+    const targetClass = category === 'sensor' ? '.sensor-cb' : '.actuator-cb';
+    const checkboxes = document.querySelectorAll(targetClass);
     checkboxes.forEach(cb => {
         cb.disabled = masterCheckbox.checked;
         if(masterCheckbox.checked) cb.checked = true;
     });
 }
 
+function toggleAttributes(masterCheckbox) {
+    const category = document.getElementById('logCategorySelect').value;
+    const targetClass = category === 'sensor' ? '.sensor-attr-cb' : '.actuator-attr-cb';
+    const checkboxes = document.querySelectorAll(targetClass);
+    checkboxes.forEach(cb => {
+        cb.disabled = masterCheckbox.checked;
+        if(masterCheckbox.checked) cb.checked = true;
+    });
+}
+
+function updateParamOptions() {
+    const category = document.getElementById('logCategorySelect').value;
+    const sensorOpts = document.getElementById('sensor-options');
+    const actuatorOpts = document.getElementById('actuator-options');
+    const paramAll = document.getElementById('param_all');
+    
+    const sensorAttrOpts = document.getElementById('sensor-attr-options');
+    const actuatorAttrOpts = document.getElementById('actuator-attr-options');
+    const attrAll = document.getElementById('attr_all');
+    
+    paramAll.checked = true;
+    attrAll.checked = true;
+
+    if (category === 'sensor') {
+        sensorOpts.style.display = 'flex';
+        actuatorOpts.style.display = 'none';
+        document.querySelectorAll('.actuator-cb').forEach(cb => { cb.checked = false; cb.disabled = true; });
+        document.querySelectorAll('.sensor-cb').forEach(cb => { cb.checked = true; cb.disabled = true; });
+        
+        sensorAttrOpts.style.display = 'flex';
+        actuatorAttrOpts.style.display = 'none';
+        document.querySelectorAll('.actuator-attr-cb').forEach(cb => { cb.checked = false; cb.disabled = true; });
+        document.querySelectorAll('.sensor-attr-cb').forEach(cb => { cb.checked = true; cb.disabled = true; });
+    } else {
+        sensorOpts.style.display = 'none';
+        actuatorOpts.style.display = 'flex';
+        document.querySelectorAll('.sensor-cb').forEach(cb => { cb.checked = false; cb.disabled = true; });
+        document.querySelectorAll('.actuator-cb').forEach(cb => { cb.checked = true; cb.disabled = true; });
+        
+        sensorAttrOpts.style.display = 'none';
+        actuatorAttrOpts.style.display = 'flex';
+        document.querySelectorAll('.sensor-attr-cb').forEach(cb => { cb.checked = false; cb.disabled = true; });
+        document.querySelectorAll('.actuator-attr-cb').forEach(cb => { cb.checked = true; cb.disabled = true; });
+    }
+}
+
 document.getElementById('requestDataForm').addEventListener('submit', async function(e) {
     e.preventDefault();
+    
+    // --- VALIDATION START ---
+    const nimNip = document.querySelector('input[name="nim_nip"]').value;
+    if (!/^\d+$/.test(nimNip) || nimNip.length < 8) {
+        alert('NIM / NIP harus berupa angka dan minimal 8 digit.');
+        return;
+    }
+
+    const dateStart = new Date(document.querySelector('input[name="datetime_start"]').value);
+    const dateEnd = new Date(document.querySelector('input[name="datetime_end"]').value);
+    if (dateStart >= dateEnd) {
+        alert('Sampai Waktu harus lebih besar dari Dari Waktu.');
+        return;
+    }
+
+    const fileInput = document.getElementById('docInput');
+    if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        if (file.type !== 'application/pdf') {
+            alert('File surat pengajuan harus berformat PDF.');
+            return;
+        }
+        if (file.size > 5 * 1024 * 1024) { // 5MB
+            alert('Ukuran file PDF maksimal 5MB.');
+            return;
+        }
+    }
+    // --- VALIDATION END ---
+
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
     btn.textContent = 'Mengirim...';
 
     const formData = new FormData(this);
+    formData.delete('parameters[]'); // clean up native html array
+    formData.delete('attributes[]');
     
-    // Process sensors
-    let selectedSensors = [];
-    if (formData.get('sensor_all') === 'all') {
-        selectedSensors = ['all'];
+    let selectedParams = [];
+    if (formData.get('param_all') === 'all') {
+        selectedParams = ['all'];
     } else {
-        const checkboxes = document.querySelectorAll('.sensor-cb:checked:not(:disabled)');
-        checkboxes.forEach(cb => selectedSensors.push(cb.value));
+        const category = document.getElementById('logCategorySelect').value;
+        const targetClass = category === 'sensor' ? '.sensor-cb:checked:not(:disabled)' : '.actuator-cb:checked:not(:disabled)';
+        const checkboxes = document.querySelectorAll(targetClass);
+        checkboxes.forEach(cb => selectedParams.push(cb.value));
     }
-    formData.set('requested_sensors', JSON.stringify(selectedSensors));
+    if (selectedParams.length === 0) {
+        alert('Anda harus memilih minimal satu Parameter/Aktuator.');
+        btn.disabled = false;
+        btn.textContent = 'Kirim Pengajuan';
+        return;
+    }
+    formData.set('requested_parameters', JSON.stringify(selectedParams));
+    
+    let selectedAttrs = [];
+    if (formData.get('attr_all') === 'all') {
+        selectedAttrs = ['all'];
+    } else {
+        const category = document.getElementById('logCategorySelect').value;
+        const targetClass = category === 'sensor' ? '.sensor-attr-cb:checked:not(:disabled)' : '.actuator-attr-cb:checked:not(:disabled)';
+        const checkboxes = document.querySelectorAll(targetClass);
+        checkboxes.forEach(cb => selectedAttrs.push(cb.value));
+    }
+    if (selectedAttrs.length === 0) {
+        alert('Anda harus memilih minimal satu Kolom Atribut Data.');
+        btn.disabled = false;
+        btn.textContent = 'Kirim Pengajuan';
+        return;
+    }
+    formData.set('requested_attributes', JSON.stringify(selectedAttrs));
 
     try {
         const response = await fetch('http://localhost:8000/api/data-requests/', {

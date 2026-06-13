@@ -7,7 +7,7 @@ class DeviceBase(BaseModel):
     device_code: str
     name: str
     type: Optional[str] = None
-    plant_type: Optional[str] = None
+    zone_id: Optional[int] = None
     location: Optional[str] = None
     firmware_version: Optional[str] = None
 

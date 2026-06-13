@@ -1,112 +1,84 @@
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-from typing import Optional
 from datetime import datetime
+from typing import List
+
 from ..database import get_db
-from ..models.device import Device
 from ..models.sensor import Sensor
-from ..models.reading import SensorReading
+from ..models.reading import SensorLog
 from ..models.alert import Alert
+from ..utils.aggregation import aggregate_sensor_data
+from ..utils.automation import evaluate_conditions
 
-router = APIRouter(prefix="/iot", tags=["iot_gateway"])
+router = APIRouter()
 
-# Schema compatibility with the old ESP32 format
-class IotIngestPayload(BaseModel):
-    api_key: str
-    device_code: str
-    sensor_name: str
+class SensorPayload(BaseModel):
+    sensor_id: str
     value: float
+    status: str = "Normal"
 
-class HeartbeatPayload(BaseModel):
-    api_key: str
-    device_code: str
-    firmware_version: Optional[str] = None
-
-# Dummy API Key for validation
-API_KEY = "supersecure"
+class IngestPayload(BaseModel):
+    sensors: List[SensorPayload]
 
 @router.post("/ingest")
-def ingest_data(payload: IotIngestPayload, db: Session = Depends(get_db)):
-    if payload.api_key != API_KEY:
-        raise HTTPException(status_code=403, detail="Invalid API Key")
-    
-    device = db.query(Device).filter(Device.device_code == payload.device_code).first()
-    if not device:
-        # Auto register device for simplicity if not exists
-        device = Device(device_code=payload.device_code, name=f"Auto Registered {payload.device_code}")
-        db.add(device)
-        db.commit()
-        db.refresh(device)
-    
-    sensor = db.query(Sensor).filter(Sensor.device_id == device.id, Sensor.name == payload.sensor_name).first()
-    if not sensor:
-        # Auto register sensor if not exists
-        sensor = Sensor(device_id=device.id, name=payload.sensor_name, sensor_type="unknown", unit="")
-        db.add(sensor)
-        db.commit()
-        db.refresh(sensor)
+def ingest_data(payload: IngestPayload, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    now = datetime.now()
+    current_date = now.date()
+    current_time = now.time()
 
-    # Save Reading
-    reading = SensorReading(sensor_id=sensor.id, device_id=device.id, value=payload.value)
-    db.add(reading)
-    
-    # Simple Alert logic
-    if sensor.min_threshold is not None and payload.value < sensor.min_threshold:
-        alert = Alert(device_id=device.id, sensor_id=sensor.id, alert_type="warning", 
-                      message=f"{sensor.name} is below threshold", value=payload.value, threshold_exceeded=sensor.min_threshold)
-        db.add(alert)
-    elif sensor.max_threshold is not None and payload.value > sensor.max_threshold:
-        alert = Alert(device_id=device.id, sensor_id=sensor.id, alert_type="warning", 
-                      message=f"{sensor.name} is above threshold", value=payload.value, threshold_exceeded=sensor.max_threshold)
-        db.add(alert)
+    processed_areas = set()
 
-    # Update heartbeat
-    device.last_heartbeat = datetime.utcnow()
-    device.status = "online"
+    for item in payload.sensors:
+        sensor = db.query(Sensor).filter(Sensor.id == item.sensor_id).first()
+        if not sensor:
+            continue
+
+        # Update heartbeat
+        sensor.is_online = True
+        sensor.updated_at = now
+
+        # Check anomalies
+        is_anomaly = False
+        exceeded_val = 0.0
+        if sensor.min_threshold is not None and item.value < sensor.min_threshold:
+            is_anomaly = True
+            exceeded_val = sensor.min_threshold
+        if sensor.max_threshold is not None and item.value > sensor.max_threshold:
+            is_anomaly = True
+            exceeded_val = sensor.max_threshold
+
+        log = SensorLog(
+            date=current_date,
+            time=current_time,
+            reading=item.value,
+            anomalies=is_anomaly,
+            status=item.status if not is_anomaly else "Kritis",
+            sensor_id=item.sensor_id
+        )
+        db.add(log)
+
+        # Trigger alert if anomaly
+        if is_anomaly:
+            alert = Alert(
+                sensor_id=sensor.id,
+                alert_type="Threshold Violation",
+                message=f"Sensor {sensor.name} membaca nilai {item.value}, melebihi batas wajar.",
+                value=item.value,
+                threshold_exceeded=exceeded_val,
+                is_read=False
+            )
+            db.add(alert)
+        
+        if sensor.area_id:
+            processed_areas.add((sensor.area_id, sensor.data_type))
+            # Trigger automation rules evaluation
+            background_tasks.add_task(evaluate_conditions, sensor.area_id, sensor.data_type, item.value)
 
     db.commit()
-    return {"status": "success", "message": "Data ingested"}
 
-@router.post("/heartbeat")
-def heartbeat(payload: HeartbeatPayload, db: Session = Depends(get_db)):
-    if payload.api_key != API_KEY:
-        raise HTTPException(status_code=403, detail="Invalid API Key")
-    
-    device = db.query(Device).filter(Device.device_code == payload.device_code).first()
-    if not device:
-        raise HTTPException(status_code=404, detail="Device not found")
-    
-    device.last_heartbeat = datetime.utcnow()
-    device.status = "online"
-    if payload.firmware_version:
-        device.firmware_version = payload.firmware_version
-        
-    db.commit()
-    return {"status": "success", "message": "Heartbeat received"}
+    # Trigger aggregation in background
+    for area_id, data_type in processed_areas:
+        background_tasks.add_task(aggregate_sensor_data, area_id, data_type, current_date, current_time)
 
-@router.get("/config")
-def get_device_config(device_code: str, api_key: str, db: Session = Depends(get_db)):
-    if api_key != API_KEY:
-        raise HTTPException(status_code=403, detail="Invalid API Key")
-    
-    device = db.query(Device).filter(Device.device_code == device_code).first()
-    if not device:
-        raise HTTPException(status_code=404, detail="Device not found")
-        
-    sensors = db.query(Sensor).filter(Sensor.device_id == device.id, Sensor.is_active == True).all()
-    
-    config_data = []
-    for sensor in sensors:
-        config_data.append({
-            "sensor_name": sensor.name,
-            "sensor_type": sensor.sensor_type,
-            "min_threshold": sensor.min_threshold,
-            "max_threshold": sensor.max_threshold
-        })
-        
-    return {
-        "status": "success",
-        "device_code": device_code,
-        "sensors": config_data
-    }
+    return {"status": "ok", "message": f"Ingested {len(payload.sensors)} readings"}

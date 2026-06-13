@@ -82,59 +82,42 @@ AppAsset::register($this);
         </button>
     </div>
     
-    <nav class="flex-1 overflow-y-auto" style="padding: var(--space-5) var(--space-3); display: flex; flex-direction: column; gap: var(--space-2);" role="navigation" aria-label="Main Navigation">
-        <a href="<?= Url::to(['site/index']) ?>" class="ds-sidebar-item <?= Yii::$app->controller->action->id == 'index' ? 'active' : '' ?>">
-            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-            Dashboard
-            <?php if (Yii::$app->controller->action->id == 'index'): ?><svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg><?php endif; ?>
-        </a>
-        <a href="<?= Url::to(['site/monitoring']) ?>" class="ds-sidebar-item <?= Yii::$app->controller->action->id == 'monitoring' ? 'active' : '' ?>">
-            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-            Monitoring
-            <?php if (Yii::$app->controller->action->id == 'monitoring'): ?><svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg><?php endif; ?>
-        </a>
-        
-        <?php if (!Yii::$app->user->isGuest): ?>
-        <a href="<?= Url::to(['site/irrigation']) ?>" class="ds-sidebar-item <?= Yii::$app->controller->action->id == 'irrigation' ? 'active' : '' ?>">
-            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"></path></svg>
-            Irrigation Control
-            <?php if (Yii::$app->controller->action->id == 'irrigation'): ?><svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg><?php endif; ?>
-        </a>
-        <?php endif; ?>
-        
-        <a href="<?= Url::to(['site/analytics']) ?>" class="ds-sidebar-item <?= Yii::$app->controller->action->id == 'analytics' ? 'active' : '' ?>">
-            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
-            Analytics
-            <?php if (Yii::$app->controller->action->id == 'analytics'): ?><svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg><?php endif; ?>
-        </a>
+          <!-- Common Links (Both Admin & Guest) -->
+          <a href="<?= Url::to(['site/index']) ?>" class="ds-sidebar-item <?= Yii::$app->controller->action->id == 'index' ? 'active' : '' ?>">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+              Dashboard
+              <?php if (Yii::$app->controller->action->id == 'index'): ?><svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg><?php endif; ?>
+          </a>
+          <a href="<?= Url::to(['site/analytics']) ?>" class="ds-sidebar-item <?= Yii::$app->controller->action->id == 'analytics' ? 'active' : '' ?>">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+              Analytic Monitoring
+              <?php if (Yii::$app->controller->action->id == 'analytics'): ?><svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg><?php endif; ?>
+          </a>
 
-        <!-- Data Request Menus (Guest Only) -->
-        <?php if (Yii::$app->user->isGuest): ?>
-        <a href="<?= Url::to(['site/request-data']) ?>" class="ds-sidebar-item <?= Yii::$app->controller->action->id == 'request-data' ? 'active' : '' ?>">
-            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-            Request Data
-            <?php if (Yii::$app->controller->action->id == 'request-data'): ?><svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg><?php endif; ?>
-        </a>
-        <?php endif; ?>
-
-        <?php if (!Yii::$app->user->isGuest): ?>
-        <a href="<?= Url::to(['site/alerts']) ?>" class="ds-sidebar-item <?= Yii::$app->controller->action->id == 'alerts' ? 'active' : '' ?>">
-            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-            Alerts & Logs
-            <?php if (Yii::$app->controller->action->id == 'alerts'): ?><svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg><?php endif; ?>
-        </a>
-        <a href="<?= Url::to(['site/devices']) ?>" class="ds-sidebar-item <?= Yii::$app->controller->action->id == 'devices' ? 'active' : '' ?>">
-            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
-            Device Management
-            <?php if (Yii::$app->controller->action->id == 'devices'): ?><svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg><?php endif; ?>
-        </a>
-        <a href="<?= Url::to(['site/manage-requests']) ?>" class="ds-sidebar-item <?= Yii::$app->controller->action->id == 'manage-requests' ? 'active' : '' ?>">
-            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
-            Manage Requests
-            <?php if (Yii::$app->controller->action->id == 'manage-requests'): ?><svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg><?php endif; ?>
-        </a>
-        <?php endif; ?>
-    </nav>
+          <?php if (!Yii::$app->user->isGuest): ?>
+          <a href="<?= Url::to(['site/monitoring']) ?>" class="ds-sidebar-item <?= Yii::$app->controller->action->id == 'monitoring' ? 'active' : '' ?>">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+              Data Realtime
+              <?php if (Yii::$app->controller->action->id == 'monitoring'): ?><svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg><?php endif; ?>
+          </a>
+          <a href="<?= Url::to(['site/areas']) ?>" class="ds-sidebar-item <?= Yii::$app->controller->action->id == 'areas' ? 'active' : '' ?>">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+              Kontrol Area
+              <?php if (Yii::$app->controller->action->id == 'areas'): ?><svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg><?php endif; ?>
+          </a>
+          <a href="<?= Url::to(['site/alerts']) ?>" class="ds-sidebar-item <?= Yii::$app->controller->action->id == 'alerts' ? 'active' : '' ?>">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+              Alerts & Logs
+              <?php if (Yii::$app->controller->action->id == 'alerts'): ?><svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg><?php endif; ?>
+          </a>
+          <?php else: ?>
+          <a href="<?= Url::to(['site/request-data']) ?>" class="ds-sidebar-item <?= Yii::$app->controller->action->id == 'request-data' ? 'active' : '' ?>">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+              Request Data
+              <?php if (Yii::$app->controller->action->id == 'request-data'): ?><svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg><?php endif; ?>
+          </a>
+          <?php endif; ?>
+      </nav>
     
     <div style="padding: var(--space-4); border-top: 1px solid var(--gray-200);">
         <div class="flex items-center">
@@ -145,10 +128,10 @@ AppAsset::register($this);
                 <p class="font-medium truncate" style="color: var(--gray-900) !important; font-size: 14px; margin: 0; line-height: 1.4;"><?= Yii::$app->user->isGuest ? 'Guest' : Yii::$app->user->identity->username ?></p>
                 <?php if (!Yii::$app->user->isGuest): ?>
                     <?= Html::beginForm(['/site/logout'], 'post', ['class' => 'inline', 'style' => 'margin: 0;']) ?>
-                    <button type="submit" class="text-caption mt-1 cursor-pointer hover:text-primary-600" style="color: var(--gray-500); border: none; background: transparent; padding: 0;">Logout</button>
+                    <button type="submit" class="text-caption mt-1 cursor-pointer hover:text-primary-600" style="color: var(--gray-500); border: none; background: transparent; padding: 0;">Keluar</button>
                     <?= Html::endForm() ?>
                 <?php else: ?>
-                    <a href="<?= Url::to(['/site/login']) ?>" class="text-caption mt-1 hover:text-primary-600 block" style="color: var(--primary-500);">Login</a>
+                    <a href="<?= Url::to(['/site/login']) ?>" class="text-caption mt-1 hover:text-primary-600 block" style="color: var(--primary-500);">Masuk</a>
                 <?php endif; ?>
             </div>
         </div>

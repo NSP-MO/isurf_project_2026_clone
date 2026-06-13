@@ -5,15 +5,15 @@ from ..database import Base
 class Sensor(Base):
     __tablename__ = "sensors"
 
-    id = Column(Integer, primary_key=True, index=True)
-    device_id = Column(Integer, ForeignKey("devices.id", ondelete="CASCADE"), nullable=False)
-    name = Column(String(255), nullable=False)
-    sensor_type = Column(String(50), nullable=False)
-    unit = Column(String(20), nullable=False)
-    min_threshold = Column(Float)
-    max_threshold = Column(Float)
-    is_active = Column(Boolean, default=True)
+    id = Column(String(50), primary_key=True, index=True) # ID unik alat
+    name = Column(String(100), nullable=False)
+    data_type = Column(String(100), nullable=False) # e.g. Kelembaban Tanah, pH
+    min_threshold = Column(Float, nullable=True)
+    max_threshold = Column(Float, nullable=True)
+    is_online = Column(Boolean, default=False)
+    area_id = Column(Integer, ForeignKey("areas.id", ondelete="CASCADE"), nullable=True)
     created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
 
-    device = relationship("Device", back_populates="sensors")
-    readings = relationship("SensorReading", back_populates="sensor", cascade="all, delete-orphan")
+    area = relationship("Area", back_populates="sensors")
+    logs = relationship("SensorLog", back_populates="sensor", cascade="all, delete-orphan")

@@ -14,7 +14,7 @@ from ..database import get_db
 from ..models.data_request import DataRequest
 from ..models.user import User
 from ..models.sensor import Sensor
-from ..models.reading import SensorReading
+from ..models.reading import AreaAggregation
 from ..schemas.data_request import DataRequestResponse, DataRequestReview
 from ..utils.auth import get_current_user
 
@@ -63,7 +63,8 @@ async def create_request(
         data_type=data_type,
         requested_sensors=sensors_list,
         date_start=date_start,
-        date_end=date_end
+        date_end=date_end,
+        status="PENDING"
     )
     db.add(db_request)
     db.commit()
@@ -92,12 +93,16 @@ def review_request(
     if not db_request:
         raise HTTPException(status_code=404, detail="Request not found")
 
-    db_request.status = review.status
+    status_upper = review.status.upper()
+    if status_upper not in ["PENDING", "REVIEW", "APPROVED", "REJECTED"]:
+        raise HTTPException(status_code=400, detail="Invalid status")
+
+    db_request.status = status_upper
     db_request.admin_notes = review.admin_notes
     db_request.reviewed_at = datetime.utcnow()
     db_request.reviewed_by = 1 # Default admin ID for MVP
     
-    if review.status == "approved":
+    if status_upper == "APPROVED":
         db_request.download_token = str(uuid.uuid4())
     else:
         db_request.download_token = None
@@ -108,7 +113,7 @@ def review_request(
 
 @router.get("/download/{download_token}")
 def download_data(download_token: str, db: Session = Depends(get_db)):
-    db_request = db.query(DataRequest).filter(DataRequest.download_token == download_token, DataRequest.status == "approved").first()
+    db_request = db.query(DataRequest).filter(DataRequest.download_token == download_token, DataRequest.status == "APPROVED").first()
     if not db_request:
         raise HTTPException(status_code=404, detail="Invalid token or request not approved")
         
@@ -116,23 +121,19 @@ def download_data(download_token: str, db: Session = Depends(get_db)):
     output = StringIO()
     writer = csv.writer(output)
     
-    # We will just write dummy/random data matching the request for now
-    # or query the actual database if we want real data.
-    # To keep it simple, query actual sensor readings based on date_start, date_end, and requested_sensors
-    
-    query = db.query(SensorReading).join(Sensor).filter(
-        SensorReading.recorded_at >= db_request.date_start,
-        SensorReading.recorded_at <= f"{db_request.date_end} 23:59:59"
+    query = db.query(AreaAggregation).filter(
+        AreaAggregation.date >= db_request.date_start,
+        AreaAggregation.date <= db_request.date_end
     )
     
     if db_request.requested_sensors and "all" not in db_request.requested_sensors:
-        query = query.filter(Sensor.sensor_type.in_(db_request.requested_sensors))
+        query = query.filter(AreaAggregation.data_type.in_(db_request.requested_sensors))
         
-    readings = query.order_by(SensorReading.recorded_at.desc()).limit(1000).all()
+    readings = query.order_by(AreaAggregation.date.desc(), AreaAggregation.time.desc()).limit(1000).all()
     
-    writer.writerow(["ID", "Device ID", "Sensor Type", "Value", "Recorded At"])
+    writer.writerow(["ID", "Area ID", "Data Type", "Average Value", "Min Value", "Max Value", "Date", "Time"])
     for r in readings:
-        writer.writerow([r.id, r.device_id, r.sensor.sensor_type, r.value, r.recorded_at])
+        writer.writerow([r.id, r.area_id, r.data_type, r.avg_value, r.min_value, r.max_value, r.date, r.time])
         
     output.seek(0)
     
@@ -154,19 +155,19 @@ def custom_download_data(
     output = StringIO()
     writer = csv.writer(output)
     
-    query = db.query(SensorReading).join(Sensor).filter(
-        SensorReading.recorded_at >= date_start,
-        SensorReading.recorded_at <= f"{date_end} 23:59:59"
+    query = db.query(AreaAggregation).filter(
+        AreaAggregation.date >= date_start,
+        AreaAggregation.date <= date_end
     )
     
     if sensors and "all" not in sensors:
-        query = query.filter(Sensor.sensor_type.in_(sensors))
+        query = query.filter(AreaAggregation.data_type.in_(sensors))
         
-    readings = query.order_by(SensorReading.recorded_at.desc()).limit(1000).all()
+    readings = query.order_by(AreaAggregation.date.desc(), AreaAggregation.time.desc()).limit(1000).all()
     
-    writer.writerow(["ID", "Device ID", "Sensor Type", "Value", "Recorded At"])
+    writer.writerow(["ID", "Area ID", "Data Type", "Average Value", "Min Value", "Max Value", "Date", "Time"])
     for r in readings:
-        writer.writerow([r.id, r.device_id, r.sensor.sensor_type, r.value, r.recorded_at])
+        writer.writerow([r.id, r.area_id, r.data_type, r.avg_value, r.min_value, r.max_value, r.date, r.time])
         
     output.seek(0)
     

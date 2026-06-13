@@ -29,7 +29,7 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout', 'signup', 'irrigation', 'alerts', 'manage-requests'],
+                'only' => ['logout', 'signup', 'alerts', 'areas', 'monitoring'],
                 'rules' => [
                     [
                         'actions' => ['signup'],
@@ -37,7 +37,7 @@ class SiteController extends Controller
                         'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['logout', 'irrigation', 'alerts', 'manage-requests'],
+                        'actions' => ['logout', 'alerts', 'areas', 'monitoring'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -88,15 +88,7 @@ class SiteController extends Controller
         return $this->render('monitoring');
     }
 
-    /**
-     * Displays irrigation control page.
-     *
-     * @return mixed
-     */
-    public function actionIrrigation()
-    {
-        return $this->render('irrigation');
-    }
+
 
     /**
      * Displays analytics page.
@@ -116,16 +108,6 @@ class SiteController extends Controller
     public function actionManageRequests()
     {
         return $this->render('manage-requests');
-    }
-
-    /**
-     * Displays devices management page.
-     *
-     * @return mixed
-     */
-    public function actionDevices()
-    {
-        return $this->render('devices');
     }
 
     /**
@@ -315,5 +297,9 @@ class SiteController extends Controller
         return $this->render('resendVerificationEmail', [
             'model' => $model
         ]);
+    }
+
+    public function actionAreas() {
+        return $this->render("areas");
     }
 }
