@@ -1,9 +1,9 @@
 const ISURF_API = {
-    baseUrl: 'http://localhost:8000/api',
+    baseUrl: '', // Local Yii2 routing
 
     async getLatestReadings() {
         try {
-            const response = await fetch(`${this.baseUrl}/readings/latest`);
+            const response = await fetch(`index.php?r=site/latest-readings`);
             if (!response.ok) throw new Error('Network response was not ok');
             return await response.json();
         } catch (error) {
@@ -14,11 +14,22 @@ const ISURF_API = {
 
     async getHistory(areaId, dataType, hours = 24) {
         try {
-            const response = await fetch(`${this.baseUrl}/readings/history/${areaId}/${dataType}?hours=${hours}`);
+            const response = await fetch(`index.php?r=site/get-history&dataType=${encodeURIComponent(dataType)}&hours=${hours}`);
             if (!response.ok) throw new Error('Network response was not ok');
             return await response.json();
         } catch (error) {
             console.error('Error fetching history:', error);
+            return [];
+        }
+    },
+
+    async getAllLogs(hours = 24) {
+        try {
+            const response = await fetch(`index.php?r=site/get-logs&hours=${hours}`);
+            if (!response.ok) throw new Error('Network response was not ok');
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching logs:', error);
             return [];
         }
     },
@@ -225,10 +236,7 @@ const ISURF_API = {
         return {
             total_discharged: 0,
             remaining: 0,
-            history: Array.from({length: hours}, (_, i) => ({
-                timestamp: new Date(Date.now() - (hours-i)*3600000).toISOString(),
-                value: 0
-            }))
+            history: []
         };
     },
 
